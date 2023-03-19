@@ -1,0 +1,12 @@
+<project>
+	<parent>
+	  	<artifactId>scrapper-bot</artifactId>
+	  	<groupId>zhenya</groupId>
+	  	<version>1.0-SNAPSHOT</version>
+	</parent>
+
+	<modelVersion>4.0.0</modelVersion>
+    <groupId>zhenya</groupId>
+    <artifactId>link-parser</artifactId>
+    <version>1.0-SNAPSHOT</version>
+</project>
