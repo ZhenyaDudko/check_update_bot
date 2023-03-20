@@ -13,11 +13,11 @@ public class GithubParsingHandler extends AbstractParsingHandler {
         super();
     }
 
-    private static final String linkPattern = "^https://github.com/[a-zA-Z0-9-]{1,39}/[a-zA-Z0-9-_.]+/?$";
+    private static final String LINK_PATTERN = "^https://github.com/[a-zA-Z0-9-]{1,39}/[a-zA-Z0-9-_.]+/?$";
 
     @Override
     protected String getLinkPattern() {
-        return linkPattern;
+        return LINK_PATTERN;
     }
 
     @Override

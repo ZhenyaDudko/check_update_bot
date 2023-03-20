@@ -13,11 +13,11 @@ public class StackOverflowParsingHandler extends AbstractParsingHandler {
         super();
     }
 
-    private static final String linkPattern = "^https://stackoverflow.com/questions/\\d+/[^/]+/?$";
+    private static final String LINK_PATTERN = "^https://stackoverflow.com/questions/\\d+/[^/]+/?$";
 
     @Override
     protected String getLinkPattern() {
-        return linkPattern;
+        return LINK_PATTERN;
     }
 
     @Override
