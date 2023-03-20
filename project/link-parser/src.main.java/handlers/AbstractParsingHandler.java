@@ -4,19 +4,19 @@ import results.ParsingResult;
 
 public abstract class AbstractParsingHandler implements ParsingHandler {
 
-    private AbstractParsingHandler successor;
+    private ParsingHandler successor;
 
-    public AbstractParsingHandler(AbstractParsingHandler successor) {
+    public AbstractParsingHandler(final ParsingHandler successor) {
         this.successor = successor;
     }
 
     public AbstractParsingHandler() {}
 
-    public AbstractParsingHandler getSuccessor() {
+    public ParsingHandler getSuccessor() {
         return successor;
     }
 
-    public void setSuccessor(AbstractParsingHandler successor) {
+    public void setSuccessor(final ParsingHandler successor) {
         this.successor = successor;
     }
 
@@ -31,7 +31,11 @@ public abstract class AbstractParsingHandler implements ParsingHandler {
         return null;
     }
 
-    protected abstract boolean checkResponsibility(final String link);
+    protected boolean checkResponsibility(final String link) {
+        return link.matches(getLinkPattern());
+    }
+
+    protected abstract String getLinkPattern();
 
     protected abstract ParsingResult parse(final String link);
 }

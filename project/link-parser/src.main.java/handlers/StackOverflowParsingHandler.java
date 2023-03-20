@@ -5,7 +5,7 @@ import results.StackOverflowParsingResult;
 
 public class StackOverflowParsingHandler extends AbstractParsingHandler {
 
-    public StackOverflowParsingHandler(AbstractParsingHandler successor) {
+    public StackOverflowParsingHandler(final ParsingHandler successor) {
         super(successor);
     }
 
@@ -13,13 +13,15 @@ public class StackOverflowParsingHandler extends AbstractParsingHandler {
         super();
     }
 
+    private static final String linkPattern = "^https://stackoverflow.com/questions/\\d+/[^/]+/?$";
+
     @Override
-    protected boolean checkResponsibility(String link) {
-        return link.matches("^https://stackoverflow.com/questions/\\d+/[^/]+/?$");
+    protected String getLinkPattern() {
+        return linkPattern;
     }
 
     @Override
-    protected ParsingResult parse(String link) {
+    protected ParsingResult parse(final String link) {
         if (!checkResponsibility(link)) {
             return null;
         }

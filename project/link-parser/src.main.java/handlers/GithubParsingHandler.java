@@ -5,7 +5,7 @@ import results.ParsingResult;
 
 public class GithubParsingHandler extends AbstractParsingHandler {
 
-    public GithubParsingHandler(AbstractParsingHandler successor) {
+    public GithubParsingHandler(final ParsingHandler successor) {
         super(successor);
     }
 
@@ -13,13 +13,15 @@ public class GithubParsingHandler extends AbstractParsingHandler {
         super();
     }
 
+    private static final String linkPattern = "^https://github.com/[a-zA-Z0-9-]{1,39}/[a-zA-Z0-9-_.]+/?$";
+
     @Override
-    protected boolean checkResponsibility(String link) {
-        return link.matches("^https://github.com/[a-zA-Z0-9-]{1,39}/[a-zA-Z0-9-_.]+/?$");
+    protected String getLinkPattern() {
+        return linkPattern;
     }
 
     @Override
-    protected ParsingResult parse(String link) {
+    protected ParsingResult parse(final String link) {
         if (!checkResponsibility(link)) {
             return null;
         }
