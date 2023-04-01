@@ -1,8 +1,7 @@
-package ru.tinkoff.edu.java.scrapper.web.scheduler.configuration;
+package ru.tinkoff.edu.java.scrapper.configuration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import ru.tinkoff.edu.java.scrapper.configuration.ApplicationConfig;
 
 @Configuration
 public class SchedulerConfig {

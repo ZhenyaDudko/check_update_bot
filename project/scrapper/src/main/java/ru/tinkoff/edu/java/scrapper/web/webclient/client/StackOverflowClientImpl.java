@@ -6,9 +6,9 @@ import java.util.List;
 
 public class StackOverflowClientImpl implements StackOverflowClient {
 
-    private final WebClient webClient;
+    private static final String urlTemplate = "https://api.stackexchange.com/questions/%s?site=stackoverflow";
 
-    private final String urlTemplate = "https://api.stackexchange.com/questions/%s?site=stackoverflow";
+    private final WebClient webClient;
 
     public StackOverflowClientImpl(String baseUrl) {
         this.webClient = WebClient.create(baseUrl);

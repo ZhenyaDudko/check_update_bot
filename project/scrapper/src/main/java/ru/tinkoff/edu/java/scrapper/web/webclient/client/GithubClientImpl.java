@@ -5,9 +5,9 @@ import ru.tinkoff.edu.java.scrapper.web.webclient.dto.GithubRepositoryResponse;
 
 public class GithubClientImpl implements GithubClient {
 
-    private final WebClient webClient;
+    private static final String urlTemplate = "https://api.github.com/repos/%s/%s";
 
-    private final String urlTemplate = "https://api.github.com/repos/%s/%s";
+    private final WebClient webClient;
 
     public GithubClientImpl(String baseUrl) {
         this.webClient = WebClient.create(baseUrl);
