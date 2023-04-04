@@ -6,7 +6,7 @@ import java.util.List;
 
 public class StackOverflowClientImpl implements StackOverflowClient {
 
-    private static final String urlTemplate = "https://api.stackexchange.com/questions/%s?site=stackoverflow";
+    public static final String baseUrl = "https://api.stackexchange.com/questions";
 
     private final WebClient webClient;
 
@@ -15,14 +15,16 @@ public class StackOverflowClientImpl implements StackOverflowClient {
     }
 
     public StackOverflowClientImpl() {
-        String defaultUrl = String.format(urlTemplate, "4");
-        this.webClient = WebClient.create(defaultUrl);
+        this.webClient = WebClient.create(baseUrl);
     }
 
     @Override
     public StackOverflowQuestionResponse fetchQuestion(String id) {
         Wrapper wrapper = webClient.get()
-                .uri(String.format(urlTemplate, id))
+                .uri(builder -> builder
+                        .pathSegment("{id}")
+                        .queryParam("site", "stackoverflow")
+                        .build(id))
                 .retrieve()
                 .bodyToMono(Wrapper.class)
                 .block();

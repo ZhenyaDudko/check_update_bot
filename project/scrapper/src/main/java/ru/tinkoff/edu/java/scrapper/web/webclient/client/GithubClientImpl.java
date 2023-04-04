@@ -1,11 +1,15 @@
 package ru.tinkoff.edu.java.scrapper.web.webclient.client;
 
+import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import ru.tinkoff.edu.java.scrapper.web.webclient.dto.GithubRepositoryResponse;
 
+@Component
 public class GithubClientImpl implements GithubClient {
 
-    private static final String urlTemplate = "https://api.github.com/repos/%s/%s";
+    public static final String baseUrl = "https://api.github.com/repos";
+
+    private static final String urlTemplate = "/{user}/{repository}";
 
     private final WebClient webClient;
 
@@ -14,14 +18,13 @@ public class GithubClientImpl implements GithubClient {
     }
 
     public GithubClientImpl() {
-        String defaultUrl = String.format(urlTemplate, "spring-projects", "spring-boot");
-        this.webClient = WebClient.create(defaultUrl);
+        this.webClient = WebClient.create(baseUrl);
     }
 
     @Override
     public GithubRepositoryResponse fetchRepository(String user, String repository) {
         return webClient.get()
-                .uri(String.format(urlTemplate, user, repository))
+                .uri(urlTemplate, user, repository)
                 .retrieve()
                 .bodyToMono(GithubRepositoryResponse.class)
                 .block();
