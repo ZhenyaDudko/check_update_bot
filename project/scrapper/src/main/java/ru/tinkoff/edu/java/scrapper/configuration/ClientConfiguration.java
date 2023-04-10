@@ -11,23 +11,20 @@ import ru.tinkoff.edu.java.scrapper.web.webclient.client.StackOverflowClientImpl
 @Configuration
 public class ClientConfiguration {
 
-    @Value("${githubClient.baseurl:#{null}}")
+    @Value("${githubClient.baseurl:" + GithubClientImpl.baseUrl + "}")
     private String githubBaseUrl;
 
-    @Value("${stackOverflowClient.baseurl:#{null}}")
+    @Value("${stackOverflowClient.baseurl:" + StackOverflowClientImpl.baseUrl + "}")
     private String stackOverflowBaseUrl;
 
     @Bean
     public GithubClient githubClient() {
-        return githubBaseUrl == null ? new GithubClientImpl() : new GithubClientImpl(githubBaseUrl);
+        return new GithubClientImpl(githubBaseUrl);
     }
 
     @Bean
     public StackOverflowClient stackOverflowClient() {
-        return stackOverflowBaseUrl == null ?
-                new StackOverflowClientImpl() :
-                new StackOverflowClientImpl(stackOverflowBaseUrl);
-
+        return new StackOverflowClientImpl(stackOverflowBaseUrl);
     }
 
 }
