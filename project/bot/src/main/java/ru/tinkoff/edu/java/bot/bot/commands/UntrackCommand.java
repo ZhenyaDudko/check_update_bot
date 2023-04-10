@@ -2,9 +2,9 @@ package ru.tinkoff.edu.java.bot.bot.commands;
 
 import com.pengrad.telegrambot.model.Update;
 import org.springframework.stereotype.Component;
-import ru.tinkoff.edu.java.bot.web.exceptions.IncorrectRequestParametersException;
-import ru.tinkoff.edu.java.bot.web.exceptions.NotFoundException;
-import ru.tinkoff.edu.java.bot.web.webclient.ScrapperClient;
+import ru.tinkoff.edu.java.bot.exceptions.web.IncorrectRequestParametersException;
+import ru.tinkoff.edu.java.bot.exceptions.web.NotFoundException;
+import ru.tinkoff.edu.java.bot.service.LinkManager;
 
 @Component
 public class UntrackCommand extends AbstractCommand {
@@ -21,10 +21,10 @@ public class UntrackCommand extends AbstractCommand {
 
     private final static String LINK_IS_NOT_TRACKED = "Link is not tracked yet";
 
-    private final ScrapperClient scrapperClient;
+    private final LinkManager linkManager;
 
-    public UntrackCommand(ScrapperClient scrapperClient) {
-        this.scrapperClient = scrapperClient;
+    public UntrackCommand(LinkManager linkManager) {
+        this.linkManager = linkManager;
     }
 
     @Override
@@ -46,7 +46,7 @@ public class UntrackCommand extends AbstractCommand {
         }
         String link = update.message().text().substring(COMMAND.length() + 1);
         try {
-            scrapperClient.deleteLink(chatId, link);
+            linkManager.deleteLink(chatId, link);
             return SUCCESS;
         } catch (IncorrectRequestParametersException e) {
             return INCORRECT_LINK;

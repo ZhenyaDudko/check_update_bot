@@ -5,9 +5,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.Exceptions;
 import reactor.core.publisher.Mono;
-import ru.tinkoff.edu.java.bot.web.dto.*;
-import ru.tinkoff.edu.java.bot.web.exceptions.IncorrectRequestParametersException;
-import ru.tinkoff.edu.java.bot.web.exceptions.NotFoundException;
+import ru.tinkoff.edu.java.bot.dto.web.*;
+import ru.tinkoff.edu.java.bot.exceptions.web.IncorrectRequestParametersException;
+import ru.tinkoff.edu.java.bot.exceptions.web.NotFoundException;
 
 public class ScrapperClientImpl implements ScrapperClient {
 
@@ -29,7 +29,7 @@ public class ScrapperClientImpl implements ScrapperClient {
     }
 
     @Override
-    public void deleteChar(long id) throws Throwable {
+    public void deleteChat(long id) throws Throwable {
         chatRequest(HttpMethod.DELETE, id);
     }
 

@@ -10,9 +10,9 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.tinkoff.edu.java.bot.bot.commands.ListCommand;
-import ru.tinkoff.edu.java.bot.web.dto.LinkResponse;
-import ru.tinkoff.edu.java.bot.web.dto.ListLinksResponse;
-import ru.tinkoff.edu.java.bot.web.webclient.ScrapperClient;
+import ru.tinkoff.edu.java.bot.dto.web.LinkResponse;
+import ru.tinkoff.edu.java.bot.dto.web.ListLinksResponse;
+import ru.tinkoff.edu.java.bot.service.LinkManager;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -27,13 +27,13 @@ public class ListCommandTest {
     ListCommand listCommand;
 
     @Mock
-    ScrapperClient scrapperClient;
+    LinkManager linkManager;
 
     @Test
     void handle_shouldReturnSpecialMessage() throws Throwable {
         //given
         Update update = mockUpdate();
-        Mockito.when(scrapperClient.getLinks(1L))
+        Mockito.when(linkManager.getLinks(1L))
                 .thenReturn(new ListLinksResponse(new ArrayList<>(), 0));
 
         //when
@@ -49,7 +49,7 @@ public class ListCommandTest {
         Update update = mockUpdate();
         URI link1 = URI.create("https://dog.com");
         URI link2 = URI.create("https://cat.com");
-        Mockito.when(scrapperClient.getLinks(1L))
+        Mockito.when(linkManager.getLinks(1L))
                 .thenReturn(
                         new ListLinksResponse(List.of(
                                 new LinkResponse(1L, link1),

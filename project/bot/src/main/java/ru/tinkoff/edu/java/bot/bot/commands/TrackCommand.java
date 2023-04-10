@@ -2,8 +2,8 @@ package ru.tinkoff.edu.java.bot.bot.commands;
 
 import com.pengrad.telegrambot.model.Update;
 import org.springframework.stereotype.Component;
-import ru.tinkoff.edu.java.bot.web.exceptions.IncorrectRequestParametersException;
-import ru.tinkoff.edu.java.bot.web.webclient.ScrapperClient;
+import ru.tinkoff.edu.java.bot.exceptions.web.IncorrectRequestParametersException;
+import ru.tinkoff.edu.java.bot.service.LinkManager;
 
 @Component
 public class TrackCommand extends AbstractCommand {
@@ -18,10 +18,10 @@ public class TrackCommand extends AbstractCommand {
 
     private final static String INCORRECT_LINK = "Link is incorrect";
 
-    private final ScrapperClient scrapperClient;
+    private final LinkManager linkManager;
 
-    public TrackCommand(ScrapperClient scrapperClient) {
-        this.scrapperClient = scrapperClient;
+    public TrackCommand(LinkManager linkManager) {
+        this.linkManager = linkManager;
     }
 
     @Override
@@ -43,7 +43,7 @@ public class TrackCommand extends AbstractCommand {
         }
         String link = update.message().text().substring(COMMAND.length() + 1);
         try {
-            scrapperClient.addLink(chatId, link);
+            linkManager.addLink(chatId, link);
             return SUCCESS;
         } catch (IncorrectRequestParametersException e) {
             return INCORRECT_LINK;

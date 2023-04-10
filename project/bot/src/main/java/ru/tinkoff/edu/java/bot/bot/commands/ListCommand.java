@@ -2,9 +2,9 @@ package ru.tinkoff.edu.java.bot.bot.commands;
 
 import com.pengrad.telegrambot.model.Update;
 import org.springframework.stereotype.Component;
-import ru.tinkoff.edu.java.bot.web.dto.LinkResponse;
-import ru.tinkoff.edu.java.bot.web.exceptions.IncorrectRequestParametersException;
-import ru.tinkoff.edu.java.bot.web.webclient.ScrapperClient;
+import ru.tinkoff.edu.java.bot.dto.web.LinkResponse;
+import ru.tinkoff.edu.java.bot.exceptions.web.IncorrectRequestParametersException;
+import ru.tinkoff.edu.java.bot.service.LinkManager;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,10 +20,10 @@ public class ListCommand extends AbstractCommand {
 
     private final static String NOT_REGISTERED = "You are not registered. Use /start";
 
-    private final ScrapperClient scrapperClient;
+    private final LinkManager linkManager;
 
-    public ListCommand(ScrapperClient scrapperClient) {
-        this.scrapperClient = scrapperClient;
+    public ListCommand(LinkManager linkManager) {
+        this.linkManager = linkManager;
     }
 
     @Override
@@ -40,7 +40,7 @@ public class ListCommand extends AbstractCommand {
     public String handleImpl(final Update update) {
         long chatId = update.message().chat().id();
         try {
-            List<LinkResponse> links = scrapperClient.getLinks(chatId).links();
+            List<LinkResponse> links = linkManager.getLinks(chatId).links();
             if (links.isEmpty()) {
                 return NO_LINKS_FOUND;
             } else {

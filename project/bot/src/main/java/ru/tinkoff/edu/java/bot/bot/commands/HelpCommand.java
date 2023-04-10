@@ -16,7 +16,7 @@ public class HelpCommand extends AbstractCommand {
 
     private final String commands;
 
-    public HelpCommand(final List<? extends Command> commands) {
+    public HelpCommand(final List<Command> commands) {
         StringBuilder builder = new StringBuilder();
         for (Command command : commands) {
             builder.append(command.command())

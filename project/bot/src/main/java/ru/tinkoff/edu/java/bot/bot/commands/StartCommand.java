@@ -2,7 +2,7 @@ package ru.tinkoff.edu.java.bot.bot.commands;
 
 import com.pengrad.telegrambot.model.Update;
 import org.springframework.stereotype.Component;
-import ru.tinkoff.edu.java.bot.web.webclient.ScrapperClient;
+import ru.tinkoff.edu.java.bot.service.LinkManager;
 
 @Component
 public class StartCommand extends AbstractCommand {
@@ -13,10 +13,10 @@ public class StartCommand extends AbstractCommand {
 
     private final static String REGISTERED = "Now you can send me a link to start tracking updates";
 
-    private final ScrapperClient scrapperClient;
+    private final LinkManager linkManager;
 
-    public StartCommand(ScrapperClient scrapperClient) {
-        this.scrapperClient = scrapperClient;
+    public StartCommand(LinkManager linkManager) {
+        this.linkManager = linkManager;
     }
 
     @Override
@@ -33,7 +33,7 @@ public class StartCommand extends AbstractCommand {
     public String handleImpl(final Update update) {
         long chatId = update.message().chat().id();
         try {
-            scrapperClient.registerChat(chatId);
+            linkManager.registerChat(chatId);
             return REGISTERED;
         } catch (Throwable e) {
             e.printStackTrace();

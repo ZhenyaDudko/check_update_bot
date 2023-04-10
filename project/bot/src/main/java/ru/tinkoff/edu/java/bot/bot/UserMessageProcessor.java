@@ -11,9 +11,9 @@ public class UserMessageProcessor {
 
     private static final String UNKNOWN_COMMAND = "Unknown command. Type /help to see available commands";
 
-    private final List<? extends Command> commands;
+    private final List<Command> commands;
 
-    public UserMessageProcessor(final List<? extends Command> commands) {
+    public UserMessageProcessor(final List<Command> commands) {
         this.commands = commands;
     }
 
