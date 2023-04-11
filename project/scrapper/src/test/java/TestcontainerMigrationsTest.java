@@ -16,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @Testcontainers
-public class SimpleIntegrationTest extends IntegrationEnvironment {
+public class TestcontainerMigrationsTest extends IntegrationEnvironment {
 
     static Connection getContainerConnection() throws SQLException {
         return DriverManager.getConnection(
