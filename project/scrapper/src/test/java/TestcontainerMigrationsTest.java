@@ -44,21 +44,24 @@ public class TestcontainerMigrationsTest extends IntegrationEnvironment {
 
         boolean hasChatTable = false;
         boolean hasLinkTable = false;
+        boolean hasChatLinkTable = false;
         while (resultSet.next()) {
             String tableName = resultSet.getString(1);
-            if (tableName.equals("chat")) {
-                hasChatTable = true;
-            } else if (tableName.equals("link")) {
-                hasLinkTable = true;
+            switch (tableName) {
+                case "chat" -> hasChatTable = true;
+                case "link" -> hasLinkTable = true;
+                case "chat_link" -> hasChatLinkTable = true;
             }
         }
 
         boolean finalHasChatTable = hasChatTable;
         boolean finalHasLinkTable = hasLinkTable;
+        boolean finalHasChatLinkTable = hasChatLinkTable;
 
         assertAll("Assert tables",
                 () -> assertThat(finalHasChatTable).isTrue(),
-                () -> assertThat(finalHasLinkTable).isTrue()
+                () -> assertThat(finalHasLinkTable).isTrue(),
+                () -> assertThat(finalHasChatLinkTable).isTrue()
         );
     }
 }
