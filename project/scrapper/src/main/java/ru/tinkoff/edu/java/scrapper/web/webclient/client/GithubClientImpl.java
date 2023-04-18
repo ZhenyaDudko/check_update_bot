@@ -2,7 +2,7 @@ package ru.tinkoff.edu.java.scrapper.web.webclient.client;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
-import ru.tinkoff.edu.java.scrapper.web.webclient.dto.GithubRepositoryResponse;
+import ru.tinkoff.edu.java.scrapper.dto.webclient.GithubRepositoryResponse;
 
 @Component
 public class GithubClientImpl implements GithubClient {

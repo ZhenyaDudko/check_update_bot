@@ -6,17 +6,26 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import ru.tinkoff.edu.java.scrapper.web.dto.ApiErrorResponse;
+import ru.tinkoff.edu.java.scrapper.domain.exception.ChatNotFoundException;
+import ru.tinkoff.edu.java.scrapper.domain.exception.LinkNotFoundException;
+import ru.tinkoff.edu.java.scrapper.dto.controller.ApiErrorResponse;
 
+import java.net.URISyntaxException;
 import java.util.Arrays;
 
 @RestControllerAdvice
 public class ControllerExceptionHandler {
 
-    @ExceptionHandler({MethodArgumentNotValidException.class, HttpMessageNotReadableException.class})
+    @ExceptionHandler({MethodArgumentNotValidException.class, HttpMessageNotReadableException.class, URISyntaxException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiErrorResponse badRequestException(Exception e) {
         return createError(e, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler({ChatNotFoundException.class, LinkNotFoundException.class})
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ApiErrorResponse bdException(Exception e) {
+        return createError(e, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(Exception.class)

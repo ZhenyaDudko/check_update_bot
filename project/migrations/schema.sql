@@ -9,8 +9,8 @@ create table if not exists chat
 create table if not exists link
 (
     id bigint primary key generated always as identity,
-    url text not null,
-    last_update date not null default now()
+    url text not null unique,
+    last_update timestamp not null default now()
 );
 
 create table if not exists chat_link

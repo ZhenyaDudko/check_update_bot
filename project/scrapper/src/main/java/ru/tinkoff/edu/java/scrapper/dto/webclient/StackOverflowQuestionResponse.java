@@ -1,4 +1,4 @@
-package ru.tinkoff.edu.java.scrapper.web.webclient.dto;
+package ru.tinkoff.edu.java.scrapper.dto.webclient;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
