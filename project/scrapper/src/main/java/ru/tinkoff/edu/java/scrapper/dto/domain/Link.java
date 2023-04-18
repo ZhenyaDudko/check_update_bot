@@ -14,4 +14,6 @@ public class Link {
     private long id;
     private URI url;
     private OffsetDateTime lastUpdate;
+    private long answerCount;
+    private long commentCount;
 }

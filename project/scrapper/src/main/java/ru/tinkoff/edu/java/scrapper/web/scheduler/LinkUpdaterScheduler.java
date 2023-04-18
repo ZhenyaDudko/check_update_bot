@@ -50,6 +50,7 @@ public class LinkUpdaterScheduler {
         for (Link link : longAgoUpdatedLinks) {
             ParsingResult parsingResult = parser.parse(link.getUrl().toString());
             OffsetDateTime time;
+            String description = "The content on the link has been updated: " + link.getUrl().toString();
             if (parsingResult instanceof GithubParsingResult githubParsingResult) {
                 GithubRepositoryResponse repositoryResponse =
                         githubClient.fetchRepository(githubParsingResult.user(), githubParsingResult.repository());
@@ -58,13 +59,17 @@ public class LinkUpdaterScheduler {
                 StackOverflowQuestionResponse questionResponse =
                         stackOverflowClient.fetchQuestion(stackOverflowParsingResult.id());
                 time = questionResponse.updatedAt();
+                if (questionResponse.answerCount() > link.getAnswerCount()) {
+                    description = "New answers were added to the question: " + link.getUrl().toString();
+                } else if (questionResponse.commentCount() > link.getCommentCount()) {
+                    description = "New comments were added to the question: " + link.getUrl().toString();
+                }
             } else {
                 continue;
             }
             if (time.isAfter(link.getLastUpdate())) {
                 List<Long> chatIds = linkUpdater.getChatsByLinkId(link.getId()).stream().map(Chat::getId).toList();
-                botClient.LinkUpdate(link.getId(), link.getUrl(),
-                        "The content on the link has been updated: " + link.getUrl().toString(), chatIds);
+                botClient.LinkUpdate(link.getId(), link.getUrl(), description, chatIds);
             }
         }
     }

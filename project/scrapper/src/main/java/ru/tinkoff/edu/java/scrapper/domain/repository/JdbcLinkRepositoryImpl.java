@@ -24,9 +24,15 @@ public class JdbcLinkRepositoryImpl implements JdbcLinkRepository {
     @Override
     @Transactional
     public Link add(long chatId, URI url) {
+        return addAnswerComment(chatId, url, null, null);
+    }
+
+    @Override
+    @Transactional
+    public Link addAnswerComment(long chatId, URI url, Long answerCount, Long commentCount) {
         String urlString = url.toString();
-        jdbcTemplate.update("insert into link (url) select ? " +
-                "where not exists (select from link where url = ?);", urlString, urlString);
+        jdbcTemplate.update("insert into link (url, answer_count, comment_count) select ?, ?, ? " +
+                "where not exists (select from link where url = ?);", urlString, answerCount, commentCount, urlString);
         jdbcTemplate.update("insert into chat_link (chat_id, link_id) " +
                 "values (?, (select id from link where url = ?));", chatId, urlString);
         List<Link> links = jdbcTemplate.query("select * from link where url = ?", linkRowMapper, urlString);
@@ -51,7 +57,8 @@ public class JdbcLinkRepositoryImpl implements JdbcLinkRepository {
 
     @Override
     public List<Link> getAll(long chatId) {
-        return jdbcTemplate.query("select link.id as id, link.url as url, link.last_update as last_update " +
+        return jdbcTemplate.query("select link.id as id, link.url as url, link.last_update as last_update, " +
+                "link.answer_count as answer_count, link.comment_count as comment_count " +
                 "from chat_link cl join link on cl.link_id = link.id " +
                 "where cl.chat_id = ?;", linkRowMapper, chatId);
     }

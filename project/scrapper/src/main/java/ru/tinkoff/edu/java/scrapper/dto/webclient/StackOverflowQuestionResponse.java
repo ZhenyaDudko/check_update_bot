@@ -6,17 +6,18 @@ import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 
-public record StackOverflowQuestionResponse(OffsetDateTime updatedAt, String title) {
+public record StackOverflowQuestionResponse(OffsetDateTime updatedAt, String title, Long answerCount, Long commentCount) {
 
     @JsonCreator
     public StackOverflowQuestionResponse(@JsonProperty("creation_date") long creationDate,
                                          @JsonProperty("last_edit_date") long lastEditDate,
-                                         @JsonProperty("title") String title) {
+                                         @JsonProperty("title") String title,
+                                         @JsonProperty("answer_count") Long answerCount) {
         this(OffsetDateTime.of(
                         LocalDateTime.ofEpochSecond(
                                 lastEditDate == 0 ? creationDate : lastEditDate,
                                 0, ZoneOffset.UTC
                         ), ZoneOffset.UTC),
-                title);
+                title, answerCount, 0L);
     }
 }

@@ -9,6 +9,7 @@ import java.util.List;
 public interface JdbcLinkRepository {
 
     Link add(long chatId, URI url);
+    Link addAnswerComment(long chatId, URI url, Long answerCount, Long commentCount);
     Link remove(long chatId, URI url) throws LinkNotFoundException;
     List<Link> getAll(long chatId);
 }
