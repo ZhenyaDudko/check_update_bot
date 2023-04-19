@@ -6,7 +6,7 @@ import ru.tinkoff.edu.java.scrapper.dto.domain.Link;
 import java.time.OffsetDateTime;
 import java.util.List;
 
-public interface JdbcLinkUpdatesRepository {
+public interface LinkUpdatesRepository {
 
     void updateTimeByLinkId(long id, OffsetDateTime time);
     List<Link> getLongAgoUpdated();

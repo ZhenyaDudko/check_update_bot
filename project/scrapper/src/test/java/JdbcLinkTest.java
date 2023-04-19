@@ -6,7 +6,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 import ru.tinkoff.edu.java.scrapper.ScrapperApplication;
-import ru.tinkoff.edu.java.scrapper.domain.repository.JdbcLinkRepository;
+import ru.tinkoff.edu.java.scrapper.domain.repository.LinkRepository;
 import ru.tinkoff.edu.java.scrapper.dto.domain.Link;
 
 import java.net.URI;
@@ -16,13 +16,23 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @SpringBootTest(classes = ScrapperApplication.class)
-public class JdbcLinkTest extends IntegrationEnvironment{
+public class JdbcLinkTest extends IntegrationEnvironment {
 
     @Autowired
-    private JdbcLinkRepository linkRepository;
+    private LinkRepository linkRepository;
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
+
+    private static final String COUNT_CHAT_LINK_BY_CHAT_ID_URL_QUERY = """
+            select count(*) from chat_link cl join link on cl.link_id = link.id
+            where cl.chat_id = ? and link.url = ?
+            """;
+
+    private static final String COUNT_CHAT_LINK_BY_CHAT_ID_LINK_ID_QUERY =
+            "select count(*) from chat_link where chat_id = ? and link_id = ?";
+
+    private static final String COUNT_LINK_BY_URL_QUERY = "select count(*) from link where url = ?";
 
     public JdbcLinkTest() throws Exception {
         super();
@@ -39,17 +49,13 @@ public class JdbcLinkTest extends IntegrationEnvironment{
         URI url = new URI("https://abacaba");
 
         // when
-        Link resultLink = linkRepository.add(chatId, url);
+        linkRepository.add(chatId, url);
 
         // then
-        Long count = jdbcTemplate.queryForObject("select count(*) from chat_link cl join link on cl.link_id = link.id " +
-                "where cl.chat_id = ? and link.url = ?", Long.class, chatId, url.toString());
+        Long count = jdbcTemplate.queryForObject(COUNT_CHAT_LINK_BY_CHAT_ID_URL_QUERY,
+                Long.class, chatId, url.toString());
 
-        assertAll("Assert add link results",
-                () -> assertThat(count).isEqualTo(1),
-                () -> assertThat(resultLink.getId()).isEqualTo(1),
-                () -> assertThat(resultLink.getUrl().toString()).isEqualTo(url.toString())
-        );
+        assertThat(count).isEqualTo(1);
     }
 
     @SneakyThrows
@@ -66,20 +72,17 @@ public class JdbcLinkTest extends IntegrationEnvironment{
         insertChatLink(chatId, linkId);
 
         // when
-        Link resultLink = linkRepository.remove(chatId, url);
+        linkRepository.remove(chatId, url);
 
         // then
-        Long countRowsInChatLink = jdbcTemplate.queryForObject("select count(*) from chat_link " +
-                "where chat_id = ? and link_id = ?", Long.class, chatId, linkId);
+        Long countRowsInChatLink = jdbcTemplate.queryForObject(COUNT_CHAT_LINK_BY_CHAT_ID_LINK_ID_QUERY,
+                Long.class, chatId, linkId);
 
-        Long countRowsInLink = jdbcTemplate.queryForObject("select count(*) from link " +
-                "where url = ?", Long.class, url.toString());
+        Long countRowsInLink = jdbcTemplate.queryForObject(COUNT_LINK_BY_URL_QUERY, Long.class, url.toString());
 
         assertAll("Assert rows",
                 () -> assertThat(countRowsInChatLink).isEqualTo(0),
-                () -> assertThat(countRowsInLink).isEqualTo(0),
-                () -> assertThat(resultLink.getId()).isEqualTo(linkId),
-                () -> assertThat(resultLink.getUrl().toString()).isEqualTo(url.toString())
+                () -> assertThat(countRowsInLink).isEqualTo(0)
         );
     }
 
@@ -114,17 +117,17 @@ public class JdbcLinkTest extends IntegrationEnvironment{
 
     @Transactional
     void insertChat(long id) {
-        jdbcTemplate.update("insert into chat (id) values (?)", id);
+        jdbcTemplate.update(JdbcBaseTest.INSERT_CHAT_QUERY, id);
     }
 
     @Transactional
     void insertLink(long id, URI url) {
-        jdbcTemplate.update("insert into link (id, url) overriding system value values (?, ?)", id, url.toString());
+        jdbcTemplate.update(JdbcBaseTest.INSERT_LINK_QUERY, id, url.toString());
     }
 
     @Transactional
     void insertChatLink(long chatId, long linkId) {
-        jdbcTemplate.update("insert into chat_link (chat_id, link_id) values (?, ?)", chatId, linkId);
+        jdbcTemplate.update(JdbcBaseTest.INSERT_CHAT_LINK_QUERY, chatId, linkId);
     }
 
 }

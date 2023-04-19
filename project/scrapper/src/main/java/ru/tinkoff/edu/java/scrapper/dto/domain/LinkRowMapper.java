@@ -1,18 +1,15 @@
 package ru.tinkoff.edu.java.scrapper.dto.domain;
 
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.stereotype.Component;
+
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.time.OffsetTime;
 import java.time.ZoneOffset;
 
-@Component
 public class LinkRowMapper implements RowMapper<Link> {
 
     @Override

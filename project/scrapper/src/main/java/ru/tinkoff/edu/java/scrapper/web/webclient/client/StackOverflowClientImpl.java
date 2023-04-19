@@ -49,7 +49,7 @@ public class StackOverflowClientImpl implements StackOverflowClient {
                 questionResponse.updatedAt(),
                 questionResponse.title(),
                 questionResponse.answerCount(),
-                (long) wrapperComments.items.size());
+                wrapperComments.items.size());
     }
 
     private record WrapperQuestion(List<StackOverflowQuestionResponse> items) {

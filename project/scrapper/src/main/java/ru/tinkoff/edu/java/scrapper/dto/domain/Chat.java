@@ -9,4 +9,8 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class Chat {
     private long id;
+
+    public Chat(long id) {
+        this.id = id;
+    }
 }

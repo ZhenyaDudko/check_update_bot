@@ -10,4 +10,5 @@
       http://www.liquibase.org/xml/ns/pro/liquibase-pro-4.1.xsd">
 
     <include file="schema.sql"/>
+    <include file="link_table_update.sql"/>
 </databaseChangeLog>

@@ -6,7 +6,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 import ru.tinkoff.edu.java.scrapper.ScrapperApplication;
-import ru.tinkoff.edu.java.scrapper.domain.repository.JdbcChatRepository;
+import ru.tinkoff.edu.java.scrapper.domain.repository.ChatRepository;
 
 import java.net.URI;
 
@@ -14,16 +14,25 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @SpringBootTest(classes = ScrapperApplication.class)
-public class JdbcChatTest extends IntegrationEnvironment{
+public class JdbcChatTest extends IntegrationEnvironment {
 
     @Autowired
-    private JdbcChatRepository chatRepository;
+    private ChatRepository chatRepository;
 
     @Autowired
-    private JdbcChatRepository linkRepository;
+    private ChatRepository linkRepository;
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
+
+    private static final String COUNT_CHAT_BY_ID_QUERY =
+            "select count(*) from chat where id = ?";
+
+    private static final String COUNT_CHAT_LINK_BY_CHAT_ID_QUERY =
+            "select count(*) from chat_link where chat_id = ?";
+
+    private static final String COUNT_LINK_BY_ID_QUERY =
+            "select count(*) from link where id = ?";
 
     public JdbcChatTest() throws Exception {
         super();
@@ -41,7 +50,7 @@ public class JdbcChatTest extends IntegrationEnvironment{
         chatRepository.add(chatId);
 
         // then
-        Long count = jdbcTemplate.queryForObject("select count(*) from chat where id = ?", Long.class, chatId);
+        Long count = jdbcTemplate.queryForObject(COUNT_CHAT_BY_ID_QUERY, Long.class, chatId);
         assertThat(count).isEqualTo(1);
     }
 
@@ -62,14 +71,11 @@ public class JdbcChatTest extends IntegrationEnvironment{
         chatRepository.remove(chatId);
 
         // then
-        Long countRowsInChatLink = jdbcTemplate.queryForObject("select count(*) from chat_link " +
-                "where chat_id = ?", Long.class, chatId);
+        Long countRowsInChatLink = jdbcTemplate.queryForObject(COUNT_CHAT_LINK_BY_CHAT_ID_QUERY, Long.class, chatId);
 
-        Long countRowsInChat = jdbcTemplate.queryForObject("select count(*) from chat " +
-                "where id = ?", Long.class, chatId);
+        Long countRowsInChat = jdbcTemplate.queryForObject(COUNT_CHAT_BY_ID_QUERY, Long.class, chatId);
 
-        Long countRowsInLink = jdbcTemplate.queryForObject("select count(*) from link " +
-                "where id = ?", Long.class, linkId);
+        Long countRowsInLink = jdbcTemplate.queryForObject(COUNT_LINK_BY_ID_QUERY, Long.class, linkId);
 
         assertAll("Assert rows",
                 () -> assertThat(countRowsInChatLink).isEqualTo(0),
@@ -80,17 +86,17 @@ public class JdbcChatTest extends IntegrationEnvironment{
 
     @Transactional
     void insertChat(long id) {
-        jdbcTemplate.update("insert into chat (id) values (?)", id);
+        jdbcTemplate.update(JdbcBaseTest.INSERT_CHAT_QUERY, id);
     }
 
     @Transactional
     void insertLink(long id, URI url) {
-        jdbcTemplate.update("insert into link (id, url) overriding system value values (?, ?)", id, url.toString());
+        jdbcTemplate.update(JdbcBaseTest.INSERT_LINK_QUERY, id, url.toString());
     }
 
     @Transactional
     void insertChatLink(long chatId, long linkId) {
-        jdbcTemplate.update("insert into chat_link (chat_id, link_id) values (?, ?)", chatId, linkId);
+        jdbcTemplate.update(JdbcBaseTest.INSERT_CHAT_LINK_QUERY, chatId, linkId);
     }
 
 }

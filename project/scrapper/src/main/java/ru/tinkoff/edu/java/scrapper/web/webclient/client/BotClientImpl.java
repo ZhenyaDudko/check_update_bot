@@ -21,7 +21,7 @@ public class BotClientImpl implements BotClient {
     }
 
     @Override
-    public void LinkUpdate(long id, URI url, String description, List<Long> chatIds) {
+    public void linkUpdate(long id, URI url, String description, List<Long> chatIds) {
         webClient.post().uri("/updates")
                 .bodyValue(new LinkUpdateRequest(id, url, description, chatIds))
                 .retrieve();

@@ -1,8 +1,8 @@
-package ru.tinkoff.edu.java.scrapper.domain.jdbc;
+package ru.tinkoff.edu.java.scrapper.domain.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import ru.tinkoff.edu.java.scrapper.domain.repository.JdbcLinkUpdatesRepository;
-import ru.tinkoff.edu.java.scrapper.domain.service.LinkUpdater;
+import ru.tinkoff.edu.java.scrapper.domain.repository.LinkUpdatesRepository;
 import ru.tinkoff.edu.java.scrapper.dto.domain.Chat;
 import ru.tinkoff.edu.java.scrapper.dto.domain.Link;
 
@@ -10,13 +10,10 @@ import java.time.OffsetDateTime;
 import java.util.List;
 
 @Component
-public class JdbcLinkUpdater implements LinkUpdater {
+@RequiredArgsConstructor
+public class LinkUpdaterImpl implements LinkUpdater {
 
-    private final JdbcLinkUpdatesRepository linkUpdatesRepository;
-
-    public JdbcLinkUpdater(JdbcLinkUpdatesRepository linkUpdatesRepository) {
-        this.linkUpdatesRepository = linkUpdatesRepository;
-    }
+    private final LinkUpdatesRepository linkUpdatesRepository;
 
     @Override
     public void updateTimeByLinkId(long id, OffsetDateTime time) {

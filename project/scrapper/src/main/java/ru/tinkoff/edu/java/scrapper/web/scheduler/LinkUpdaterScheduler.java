@@ -69,7 +69,7 @@ public class LinkUpdaterScheduler {
             }
             if (time.isAfter(link.getLastUpdate())) {
                 List<Long> chatIds = linkUpdater.getChatsByLinkId(link.getId()).stream().map(Chat::getId).toList();
-                botClient.LinkUpdate(link.getId(), link.getUrl(), description, chatIds);
+                botClient.linkUpdate(link.getId(), link.getUrl(), description, chatIds);
             }
         }
     }

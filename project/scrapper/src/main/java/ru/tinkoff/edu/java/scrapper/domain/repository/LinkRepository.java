@@ -6,10 +6,11 @@ import ru.tinkoff.edu.java.scrapper.dto.domain.Link;
 import java.net.URI;
 import java.util.List;
 
-public interface JdbcLinkRepository {
+public interface LinkRepository {
 
-    Link add(long chatId, URI url);
-    Link addAnswerComment(long chatId, URI url, Long answerCount, Long commentCount);
-    Link remove(long chatId, URI url) throws LinkNotFoundException;
+    void add(long chatId, URI url);
+    void addAnswerComment(long chatId, URI url, Integer answerCount, Integer commentCount);
+    void remove(long chatId, URI url) throws LinkNotFoundException;
+    List<Link> getLinksByUrl(URI url);
     List<Link> getAll(long chatId);
 }

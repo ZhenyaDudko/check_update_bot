@@ -6,11 +6,10 @@ import org.springframework.stereotype.Component;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-@Component
 public class ChatRowMapper implements RowMapper<Chat> {
 
     @Override
     public Chat mapRow(ResultSet rs, int rowNum) throws SQLException {
-        return new Chat().setId(rs.getLong("id"));
+        return new Chat(rs.getInt("id"));
     }
 }
