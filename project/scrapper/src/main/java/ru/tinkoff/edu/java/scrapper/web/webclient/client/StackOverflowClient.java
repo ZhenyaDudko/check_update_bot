@@ -1,6 +1,6 @@
 package ru.tinkoff.edu.java.scrapper.web.webclient.client;
 
-import ru.tinkoff.edu.java.scrapper.web.webclient.dto.StackOverflowQuestionResponse;
+import ru.tinkoff.edu.java.scrapper.dto.webclient.StackOverflowQuestionResponse;
 
 public interface StackOverflowClient {
 

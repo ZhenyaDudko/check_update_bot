@@ -1,7 +1,8 @@
 package ru.tinkoff.edu.java.scrapper.web.webclient.client;
 
 import org.springframework.web.reactive.function.client.WebClient;
-import ru.tinkoff.edu.java.scrapper.web.webclient.dto.StackOverflowQuestionResponse;
+import ru.tinkoff.edu.java.scrapper.dto.webclient.StackOverflowQuestionResponse;
+
 import java.util.List;
 
 public class StackOverflowClientImpl implements StackOverflowClient {
@@ -20,21 +21,41 @@ public class StackOverflowClientImpl implements StackOverflowClient {
 
     @Override
     public StackOverflowQuestionResponse fetchQuestion(String id) {
-        Wrapper wrapper = webClient.get()
+        WrapperQuestion wrapperQuestion = webClient.get()
                 .uri(builder -> builder
                         .pathSegment("{id}")
                         .queryParam("site", "stackoverflow")
                         .build(id))
                 .retrieve()
-                .bodyToMono(Wrapper.class)
+                .bodyToMono(WrapperQuestion.class)
                 .block();
-        if (wrapper == null || wrapper.items.isEmpty()) {
+        if (wrapperQuestion == null || wrapperQuestion.items.isEmpty()) {
             return null;
         }
-        return wrapper.items.get(0);
+        WrapperComments wrapperComments = webClient.get()
+                .uri(builder -> builder
+                        .pathSegment("{id}")
+                        .pathSegment("comments")
+                        .queryParam("site", "stackoverflow")
+                        .build(id))
+                .retrieve()
+                .bodyToMono(WrapperComments.class)
+                .block();
+        if (wrapperComments == null) {
+            return null;
+        }
+        StackOverflowQuestionResponse questionResponse = wrapperQuestion.items.get(0);
+        return new StackOverflowQuestionResponse(
+                questionResponse.updatedAt(),
+                questionResponse.title(),
+                questionResponse.answerCount(),
+                wrapperComments.items.size());
     }
 
-    private record Wrapper(List<StackOverflowQuestionResponse> items) {
+    private record WrapperQuestion(List<StackOverflowQuestionResponse> items) {
+    }
+
+    private record WrapperComments(List<Object> items) {
     }
 
 }

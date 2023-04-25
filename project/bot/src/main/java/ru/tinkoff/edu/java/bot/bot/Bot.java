@@ -31,6 +31,10 @@ public class Bot {
         return bot.execute(request);
     }
 
+    public void sendMessage(Long tgChatId, String message) {
+        bot.execute(new SendMessage(tgChatId, message));
+    }
+
     public void start() {
         List<BotCommand> commands = userMessageProcessor.commands().stream().map(Command::toApiCommand).toList();
         bot.execute(new SetMyCommands(commands.toArray(new BotCommand[0])));
@@ -38,7 +42,7 @@ public class Bot {
             for (final Update update : list) {
                 String response = userMessageProcessor.process(update);
                 if (response != null) {
-                    bot.execute(new SendMessage(update.message().chat().id(), response));
+                    sendMessage(update.message().chat().id(), response);
                 }
             }
             return UpdatesListener.CONFIRMED_UPDATES_ALL;

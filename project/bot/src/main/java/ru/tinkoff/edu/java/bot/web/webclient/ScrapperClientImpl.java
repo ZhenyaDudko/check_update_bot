@@ -1,5 +1,6 @@
 package ru.tinkoff.edu.java.bot.web.webclient;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -79,10 +80,10 @@ public class ScrapperClientImpl implements ScrapperClient {
         return responseSpec
                 .onStatus(HttpStatus.BAD_REQUEST::equals,
                         response -> response.bodyToMono(ApiErrorResponse.class)
-                                .map(val -> new IncorrectRequestParametersException(val.description())))
+                                .map(val -> new IncorrectRequestParametersException(val.exceptionMessage())))
                 .onStatus(HttpStatus.NOT_FOUND::equals,
                         response -> response.bodyToMono(ApiErrorResponse.class)
-                                .map(val -> new NotFoundException(val.description())));
+                                .map(val -> new NotFoundException(val.exceptionMessage())));
     }
 
     private <T> T finishAndUnwrapException(Mono<T> result) throws Throwable {
