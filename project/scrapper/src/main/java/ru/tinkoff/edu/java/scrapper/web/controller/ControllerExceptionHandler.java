@@ -16,7 +16,12 @@ import java.util.Arrays;
 @RestControllerAdvice
 public class ControllerExceptionHandler {
 
-    @ExceptionHandler({MethodArgumentNotValidException.class, HttpMessageNotReadableException.class, URISyntaxException.class})
+    @ExceptionHandler({
+            MethodArgumentNotValidException.class,
+            HttpMessageNotReadableException.class,
+            URISyntaxException.class,
+            IllegalArgumentException.class
+    })
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiErrorResponse badRequestException(Exception e) {
         return createError(e, HttpStatus.BAD_REQUEST);

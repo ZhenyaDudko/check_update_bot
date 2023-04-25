@@ -2,7 +2,6 @@ import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 import ru.tinkoff.edu.java.scrapper.ScrapperApplication;
@@ -14,16 +13,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @SpringBootTest(classes = ScrapperApplication.class)
-public class JdbcChatTest extends IntegrationEnvironment {
+public class JdbcChatTest extends JdbcBaseTest {
 
     @Autowired
     private ChatRepository chatRepository;
 
     @Autowired
     private ChatRepository linkRepository;
-
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
 
     private static final String COUNT_CHAT_BY_ID_QUERY =
             "select count(*) from chat where id = ?";
@@ -80,23 +76,8 @@ public class JdbcChatTest extends IntegrationEnvironment {
         assertAll("Assert rows",
                 () -> assertThat(countRowsInChatLink).isEqualTo(0),
                 () -> assertThat(countRowsInChat).isEqualTo(0),
-                () -> assertThat(countRowsInLink).isEqualTo(0)
+                () -> assertThat(countRowsInLink).isEqualTo(1)
         );
-    }
-
-    @Transactional
-    void insertChat(long id) {
-        jdbcTemplate.update(JdbcBaseTest.INSERT_CHAT_QUERY, id);
-    }
-
-    @Transactional
-    void insertLink(long id, URI url) {
-        jdbcTemplate.update(JdbcBaseTest.INSERT_LINK_QUERY, id, url.toString());
-    }
-
-    @Transactional
-    void insertChatLink(long chatId, long linkId) {
-        jdbcTemplate.update(JdbcBaseTest.INSERT_CHAT_LINK_QUERY, chatId, linkId);
     }
 
 }

@@ -8,9 +8,13 @@ import java.util.List;
 
 public interface LinkRepository {
 
-    void add(long chatId, URI url);
-    void addAnswerComment(long chatId, URI url, Integer answerCount, Integer commentCount);
-    void remove(long chatId, URI url) throws LinkNotFoundException;
+    void addLinkIfNotExists(long chatId, URI url);
+
+    void addLinkIfNotExists(long chatId, URI url, Integer answerCount, Integer commentCount);
+
+    void removeLinkIfNoOneRefers(long chatId, URI url) throws LinkNotFoundException;
+
     List<Link> getLinksByUrl(URI url);
+
     List<Link> getAll(long chatId);
 }

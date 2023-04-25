@@ -12,7 +12,9 @@ public class HelpCommand extends AbstractCommand {
 
     private final static String DESCRIPTION = "show available commands";
 
-    private final static String ABOUT_BOT = "I can track your links and notify you when their content is updated.";
+    private final static String ABOUT_BOT = """
+            I can track your links and notify you when their content is updated. \n
+            Now I support links to github repositories and stackoverflow questions""";
 
     private final String commands;
 

@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -63,11 +64,15 @@ public class JooqConfiguration {
                 .withRenderFormatted(true)
                 .withRenderQuotedNames(RenderQuotedNames.NEVER);
 
-        String sqlDialectName = "POSTGRES";
-        SQLDialect dialect = SQLDialect.valueOf(sqlDialectName);
-        jooqConfiguration.set(dialect);
+        SQLDialect sqlDialectName = SQLDialect.POSTGRES;
+        jooqConfiguration.set(sqlDialectName);
 
         return jooqConfiguration;
+    }
+
+    @Bean
+    public JdbcTemplate jdbcTemplate() {
+        return new JdbcTemplate(dataSource());
     }
 
 }

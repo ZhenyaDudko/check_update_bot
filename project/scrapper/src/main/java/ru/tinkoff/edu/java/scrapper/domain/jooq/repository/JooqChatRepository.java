@@ -2,12 +2,10 @@ package ru.tinkoff.edu.java.scrapper.domain.jooq.repository;
 
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
-import org.springframework.stereotype.Repository;
 import ru.tinkoff.edu.java.scrapper.domain.exception.ChatNotFoundException;
 import ru.tinkoff.edu.java.scrapper.domain.jooq.data.tables.Chat;
 import ru.tinkoff.edu.java.scrapper.domain.repository.ChatRepository;
 
-@Repository
 @RequiredArgsConstructor
 public class JooqChatRepository implements ChatRepository {
 

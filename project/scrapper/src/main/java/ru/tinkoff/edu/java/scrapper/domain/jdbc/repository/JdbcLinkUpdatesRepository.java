@@ -12,7 +12,7 @@ import ru.tinkoff.edu.java.scrapper.dto.domain.LinkRowMapper;
 import java.time.OffsetDateTime;
 import java.util.List;
 
-//@Repository
+@Repository
 @RequiredArgsConstructor
 public class JdbcLinkUpdatesRepository implements LinkUpdatesRepository {
 

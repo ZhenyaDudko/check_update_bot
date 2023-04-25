@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 import org.jooq.impl.DSL;
 import org.jooq.types.DayToSecond;
-import org.springframework.stereotype.Repository;
 import ru.tinkoff.edu.java.scrapper.domain.jooq.data.tables.ChatLink;
 import ru.tinkoff.edu.java.scrapper.domain.jooq.data.tables.records.LinkRecord;
 import ru.tinkoff.edu.java.scrapper.domain.repository.LinkUpdatesRepository;
@@ -15,7 +14,6 @@ import ru.tinkoff.edu.java.scrapper.dto.domain.LinkRecordMapper;
 import java.time.OffsetDateTime;
 import java.util.List;
 
-@Repository
 @RequiredArgsConstructor
 public class JooqLinkUpdatesRepository implements LinkUpdatesRepository {
 

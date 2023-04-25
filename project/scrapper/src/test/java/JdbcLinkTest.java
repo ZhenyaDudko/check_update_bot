@@ -2,7 +2,6 @@ import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 import ru.tinkoff.edu.java.scrapper.ScrapperApplication;
@@ -16,21 +15,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @SpringBootTest(classes = ScrapperApplication.class)
-public class JdbcLinkTest extends IntegrationEnvironment {
+public class JdbcLinkTest extends JdbcBaseTest {
 
     @Autowired
     private LinkRepository linkRepository;
-
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
-
-    private static final String COUNT_CHAT_LINK_BY_CHAT_ID_URL_QUERY = """
-            select count(*) from chat_link cl join link on cl.link_id = link.id
-            where cl.chat_id = ? and link.url = ?
-            """;
-
-    private static final String COUNT_CHAT_LINK_BY_CHAT_ID_LINK_ID_QUERY =
-            "select count(*) from chat_link where chat_id = ? and link_id = ?";
 
     private static final String COUNT_LINK_BY_URL_QUERY = "select count(*) from link where url = ?";
 
@@ -42,18 +30,17 @@ public class JdbcLinkTest extends IntegrationEnvironment {
     @Transactional
     @Rollback
     @Test
-    void addTest() {
+    void addLinkIfNotExists_shouldAddNew() {
         // given
         long chatId = 1;
         insertChat(chatId);
         URI url = new URI("https://abacaba");
 
         // when
-        linkRepository.add(chatId, url);
+        linkRepository.addLinkIfNotExists(chatId, url);
 
         // then
-        Long count = jdbcTemplate.queryForObject(COUNT_CHAT_LINK_BY_CHAT_ID_URL_QUERY,
-                Long.class, chatId, url.toString());
+        Long count = countLinkByUrl(url);
 
         assertThat(count).isEqualTo(1);
     }
@@ -62,7 +49,49 @@ public class JdbcLinkTest extends IntegrationEnvironment {
     @Transactional
     @Rollback
     @Test
-    void removeTest() {
+    void addLinkIfNotExists_shouldNotAdd() {
+        // given
+        long chatId = 1;
+        long linkId = 1;
+        insertChat(chatId);
+        URI url = new URI("https://abacaba");
+        insertLink(linkId, url);
+
+        // when
+        linkRepository.addLinkIfNotExists(chatId, url);
+
+        // then
+        Long count = countLinkByUrl(url);
+
+        assertThat(count).isEqualTo(1);
+    }
+
+    @SneakyThrows
+    @Transactional
+    @Rollback
+    @Test
+    void removeLinkIfNoOneRefers_shouldRemove() {
+        // given
+        long chatId = 1;
+        long linkId = 1;
+        URI url = new URI("https://abc.abc.abc");
+        insertChat(chatId);
+        insertLink(linkId, url);
+
+        // when
+        linkRepository.removeLinkIfNoOneRefers(chatId, url);
+
+        // then
+        Long count = countLinkByUrl(url);
+
+        assertThat(count).isEqualTo(0);
+    }
+
+    @SneakyThrows
+    @Transactional
+    @Rollback
+    @Test
+    void removeLinkIfNoOneRefers_shouldNotRemove() {
         // given
         long chatId = 1;
         long linkId = 1;
@@ -72,25 +101,19 @@ public class JdbcLinkTest extends IntegrationEnvironment {
         insertChatLink(chatId, linkId);
 
         // when
-        linkRepository.remove(chatId, url);
+        linkRepository.removeLinkIfNoOneRefers(chatId, url);
 
         // then
-        Long countRowsInChatLink = jdbcTemplate.queryForObject(COUNT_CHAT_LINK_BY_CHAT_ID_LINK_ID_QUERY,
-                Long.class, chatId, linkId);
+        Long count = countLinkByUrl(url);
 
-        Long countRowsInLink = jdbcTemplate.queryForObject(COUNT_LINK_BY_URL_QUERY, Long.class, url.toString());
-
-        assertAll("Assert rows",
-                () -> assertThat(countRowsInChatLink).isEqualTo(0),
-                () -> assertThat(countRowsInLink).isEqualTo(0)
-        );
+        assertThat(count).isEqualTo(1);
     }
 
     @SneakyThrows
     @Transactional
     @Rollback
     @Test
-    void getAllTest() {
+    void getAll_shouldReturnAll() {
         // given
         long chatId = 1;
         long link1Id = 1;
@@ -116,18 +139,8 @@ public class JdbcLinkTest extends IntegrationEnvironment {
     }
 
     @Transactional
-    void insertChat(long id) {
-        jdbcTemplate.update(JdbcBaseTest.INSERT_CHAT_QUERY, id);
-    }
-
-    @Transactional
-    void insertLink(long id, URI url) {
-        jdbcTemplate.update(JdbcBaseTest.INSERT_LINK_QUERY, id, url.toString());
-    }
-
-    @Transactional
-    void insertChatLink(long chatId, long linkId) {
-        jdbcTemplate.update(JdbcBaseTest.INSERT_CHAT_LINK_QUERY, chatId, linkId);
+    Long countLinkByUrl(URI url) {
+        return jdbcTemplate.queryForObject(COUNT_LINK_BY_URL_QUERY, Long.class, url.toString());
     }
 
 }

@@ -9,6 +9,8 @@ import java.util.List;
 public interface LinkUpdatesRepository {
 
     void updateTimeByLinkId(long id, OffsetDateTime time);
+
     List<Link> getLongAgoUpdated();
+
     List<Chat> getChatsByLinkId(long id);
 }

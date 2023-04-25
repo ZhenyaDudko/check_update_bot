@@ -3,10 +3,9 @@ package ru.tinkoff.edu.java.scrapper.domain.jdbc.repository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 import ru.tinkoff.edu.java.scrapper.domain.repository.ChatRepository;
 
-//@Repository
+@Repository
 @RequiredArgsConstructor
 public class JdbcChatRepository implements ChatRepository {
 
@@ -24,7 +23,6 @@ public class JdbcChatRepository implements ChatRepository {
     }
 
     @Override
-    @Transactional
     public void remove(long chatId) {
         jdbcTemplate.update(DELETE_CHAT_QUERY, chatId);
     }
