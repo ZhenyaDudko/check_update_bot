@@ -1,7 +1,6 @@
 package ru.tinkoff.edu.java.scrapper.domain.service;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import parser.Parser;
@@ -27,26 +26,25 @@ public class LinkServiceImpl implements LinkService {
     private final Parser parser = new Parser();
 
     @Override
-    public Link add(long chatId, URI url) {
-        addTransactional(chatId, url);
-        return linkRepository.getLinksByUrl(url).get(0);
-    }
-
     @Transactional
-    private void addTransactional(long chatId, URI url) {
+    public Link add(long chatId, URI url) {
         ParsingResult parsingResult = parser.parse(url.toString());
         if (parsingResult == null) {
             throw new IllegalArgumentException("Not supported link");
         }
-        if (parsingResult instanceof StackOverflowParsingResult stackOverflowParsingResult) {
-            StackOverflowQuestionResponse response = stackOverflowClient.fetchQuestion(stackOverflowParsingResult.id());
-            linkRepository.addLinkIfNotExists(chatId, url, response.answerCount(), response.commentCount());
-        } else {
-            linkRepository.addLinkIfNotExists(chatId, url);
+        List<Link> linksWithUrl = linkRepository.getLinksByUrl(url);
+        if (linksWithUrl.size() == 0) {
+            if (parsingResult instanceof StackOverflowParsingResult stackOverflowParsingResult) {
+                StackOverflowQuestionResponse response = stackOverflowClient.fetchQuestion(stackOverflowParsingResult.id());
+                linksWithUrl.add(linkRepository.addLink(chatId, url, response.answerCount(), response.commentCount()));
+            } else {
+                linksWithUrl.add(linkRepository.addLink(chatId, url));
+            }
         }
         try {
-            chatLinkRepository.addChatLinkByUrl(chatId, url);
+            chatLinkRepository.addChatLink(chatId, linksWithUrl.get(0).getId());
         } catch (Exception ignored) {}
+        return linksWithUrl.get(0);
     }
 
     @Override
@@ -56,9 +54,13 @@ public class LinkServiceImpl implements LinkService {
         if (links.size() == 0) {
             throw new LinkNotFoundException("Link not found: " + url);
         }
-        chatLinkRepository.removeChatLinkByUrl(chatId, url);
-        linkRepository.removeLinkIfNoOneRefers(chatId, url);
-        return links.get(0);
+        Link link = links.get(0);
+        chatLinkRepository.removeChatLink(chatId, link.getId());
+        Long countRefs = chatLinkRepository.countChatByLinkId(link.getId());
+        if (countRefs == 0) {
+            linkRepository.removeLink(chatId, link.getId());
+        }
+        return link;
     }
 
     @Override

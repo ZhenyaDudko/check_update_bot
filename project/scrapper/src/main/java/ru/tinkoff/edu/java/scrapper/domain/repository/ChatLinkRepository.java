@@ -1,10 +1,17 @@
 package ru.tinkoff.edu.java.scrapper.domain.repository;
 
+import ru.tinkoff.edu.java.scrapper.dto.domain.Chat;
+
 import java.net.URI;
+import java.util.List;
 
 public interface ChatLinkRepository {
 
-    void addChatLinkByUrl(long chatId, URI url);
+    void addChatLink(long chatId, long linkId);
 
-    void removeChatLinkByUrl(long chatId, URI url);
+    void removeChatLink(long chatId, long linkId);
+
+    Long countChatByLinkId(long linkId);
+
+    List<Chat> getChatsByLinkId(long id);
 }

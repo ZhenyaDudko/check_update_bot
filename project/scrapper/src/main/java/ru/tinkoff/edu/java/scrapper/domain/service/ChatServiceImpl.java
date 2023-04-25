@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import ru.tinkoff.edu.java.scrapper.domain.exception.ChatNotFoundException;
 import ru.tinkoff.edu.java.scrapper.domain.exception.LinkNotFoundException;
+import ru.tinkoff.edu.java.scrapper.domain.repository.ChatLinkRepository;
 import ru.tinkoff.edu.java.scrapper.domain.repository.ChatRepository;
 import ru.tinkoff.edu.java.scrapper.domain.repository.LinkRepository;
 import ru.tinkoff.edu.java.scrapper.dto.domain.Link;
@@ -17,6 +18,7 @@ public class ChatServiceImpl implements ChatService {
 
     private final ChatRepository chatRepository;
     private final LinkRepository linkRepository;
+    private final ChatLinkRepository chatLinkRepository;
 
     @Override
     public void register(long chatId) {
@@ -35,7 +37,10 @@ public class ChatServiceImpl implements ChatService {
         List<Link> linkList = linkRepository.getAll(chatId);
         for (Link link : linkList) {
             try {
-                linkRepository.removeLinkIfNoOneRefers(chatId, link.getUrl());
+                Long countRefs = chatLinkRepository.countChatByLinkId(link.getId());
+                if (countRefs == 0) {
+                    linkRepository.removeLink(chatId, link.getId());
+                }
             } catch (LinkNotFoundException ignored) {}
         }
         chatRepository.remove(chatId);

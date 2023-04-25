@@ -7,8 +7,10 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.tinkoff.edu.java.scrapper.ScrapperApplication;
 import ru.tinkoff.edu.java.scrapper.domain.repository.LinkRepository;
 import ru.tinkoff.edu.java.scrapper.dto.domain.Link;
+import ru.tinkoff.edu.java.scrapper.dto.domain.LinkRowMapper;
 
 import java.net.URI;
+import java.time.OffsetDateTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -22,6 +24,11 @@ public class JdbcLinkTest extends JdbcBaseTest {
 
     private static final String COUNT_LINK_BY_URL_QUERY = "select count(*) from link where url = ?";
 
+    private static final String SELECT_LINK_BY_ID_QUERY = "select * from link where id = ?";
+
+    private static final String INSERT_LINK_WITH_TIME_QUERY =
+            "insert into link (id, url, last_update) overriding system value values (?, ?, ?)";
+
     public JdbcLinkTest() throws Exception {
         super();
     }
@@ -30,14 +37,14 @@ public class JdbcLinkTest extends JdbcBaseTest {
     @Transactional
     @Rollback
     @Test
-    void addLinkIfNotExists_shouldAddNew() {
+    void addLink_shouldAddNew() {
         // given
         long chatId = 1;
         insertChat(chatId);
         URI url = new URI("https://abacaba");
 
         // when
-        linkRepository.addLinkIfNotExists(chatId, url);
+        linkRepository.addLink(chatId, url);
 
         // then
         Long count = countLinkByUrl(url);
@@ -49,28 +56,7 @@ public class JdbcLinkTest extends JdbcBaseTest {
     @Transactional
     @Rollback
     @Test
-    void addLinkIfNotExists_shouldNotAdd() {
-        // given
-        long chatId = 1;
-        long linkId = 1;
-        insertChat(chatId);
-        URI url = new URI("https://abacaba");
-        insertLink(linkId, url);
-
-        // when
-        linkRepository.addLinkIfNotExists(chatId, url);
-
-        // then
-        Long count = countLinkByUrl(url);
-
-        assertThat(count).isEqualTo(1);
-    }
-
-    @SneakyThrows
-    @Transactional
-    @Rollback
-    @Test
-    void removeLinkIfNoOneRefers_shouldRemove() {
+    void removeLink_shouldRemove() {
         // given
         long chatId = 1;
         long linkId = 1;
@@ -79,34 +65,12 @@ public class JdbcLinkTest extends JdbcBaseTest {
         insertLink(linkId, url);
 
         // when
-        linkRepository.removeLinkIfNoOneRefers(chatId, url);
+        linkRepository.removeLink(chatId, linkId);
 
         // then
         Long count = countLinkByUrl(url);
 
         assertThat(count).isEqualTo(0);
-    }
-
-    @SneakyThrows
-    @Transactional
-    @Rollback
-    @Test
-    void removeLinkIfNoOneRefers_shouldNotRemove() {
-        // given
-        long chatId = 1;
-        long linkId = 1;
-        URI url = new URI("https://abc.abc.abc");
-        insertChat(chatId);
-        insertLink(linkId, url);
-        insertChatLink(chatId, linkId);
-
-        // when
-        linkRepository.removeLinkIfNoOneRefers(chatId, url);
-
-        // then
-        Long count = countLinkByUrl(url);
-
-        assertThat(count).isEqualTo(1);
     }
 
     @SneakyThrows
@@ -138,9 +102,63 @@ public class JdbcLinkTest extends JdbcBaseTest {
         );
     }
 
+    @SneakyThrows
+    @Transactional
+    @Rollback
+    @Test
+    void updateTimeTest() {
+        // given
+        OffsetDateTime time = OffsetDateTime.now();
+        long linkId = 1;
+        URI url = new URI("https://abacaba");
+        insertLink(linkId, url);
+
+        // when
+        linkRepository.updateTimeByLinkId(linkId, time);
+
+        // then
+        List<Link> links = jdbcTemplate.query(SELECT_LINK_BY_ID_QUERY, new LinkRowMapper(), linkId);
+
+        assertAll("Assert update time of link results",
+                () -> assertThat(links.size()).isEqualTo(1),
+                () -> assertThat(links.get(0).getId()).isEqualTo(linkId),
+                () -> assertThat(links.get(0).getLastUpdate()).isEqualTo(time)
+        );
+    }
+
+    @SneakyThrows
+    @Transactional
+    @Rollback
+    @Test
+    void getLastUpdatedTest() {
+        // given
+        long link1Id = 1;
+        long link2Id = 2;
+        URI url1 = new URI("https://abc");
+        URI url2 = new URI("https://def");
+        OffsetDateTime time1 = OffsetDateTime.now();
+        OffsetDateTime time2 = time1.minusHours(2);
+        insertLinkWithTime(link1Id, url1, time1);
+        insertLinkWithTime(link2Id, url2, time2);
+
+        // when
+        List<Link> resultList = linkRepository.getLongAgoUpdated();
+
+        // then
+        assertAll("Assert get last updated links results",
+                () -> assertThat(resultList.size()).isEqualTo(1),
+                () -> assertThat(resultList.get(0).getId()).isEqualTo(2)
+        );
+    }
+
     @Transactional
     Long countLinkByUrl(URI url) {
         return jdbcTemplate.queryForObject(COUNT_LINK_BY_URL_QUERY, Long.class, url.toString());
+    }
+
+    @Transactional
+    void insertLinkWithTime(long id, URI url, OffsetDateTime time) {
+        jdbcTemplate.update(INSERT_LINK_WITH_TIME_QUERY, id, url.toString(), time);
     }
 
 }
