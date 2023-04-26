@@ -1,7 +1,6 @@
-package ru.tinkoff.edu.java.scrapper.domain.service;
+package ru.tinkoff.edu.java.scrapper.domain.jooq_jdbc_service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import parser.Parser;
 import results.ParsingResult;
@@ -9,6 +8,7 @@ import results.StackOverflowParsingResult;
 import ru.tinkoff.edu.java.scrapper.domain.exception.LinkNotFoundException;
 import ru.tinkoff.edu.java.scrapper.domain.repository.ChatLinkRepository;
 import ru.tinkoff.edu.java.scrapper.domain.repository.LinkRepository;
+import ru.tinkoff.edu.java.scrapper.domain.service.LinkService;
 import ru.tinkoff.edu.java.scrapper.dto.domain.Link;
 import ru.tinkoff.edu.java.scrapper.dto.webclient.StackOverflowQuestionResponse;
 import ru.tinkoff.edu.java.scrapper.web.webclient.client.StackOverflowClient;
@@ -16,7 +16,6 @@ import ru.tinkoff.edu.java.scrapper.web.webclient.client.StackOverflowClient;
 import java.net.URI;
 import java.util.List;
 
-@Component
 @RequiredArgsConstructor
 public class LinkServiceImpl implements LinkService {
 

@@ -7,6 +7,7 @@ import org.jooq.impl.DefaultConfiguration;
 import org.jooq.impl.DefaultDSLContext;
 import org.postgresql.ds.PGSimpleDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
@@ -14,10 +15,19 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import ru.tinkoff.edu.java.scrapper.domain.jooq.repository.JooqChatLinkRepository;
+import ru.tinkoff.edu.java.scrapper.domain.jooq.repository.JooqChatRepository;
+import ru.tinkoff.edu.java.scrapper.domain.jooq.repository.JooqLinkRepository;
+import ru.tinkoff.edu.java.scrapper.domain.jooq_jdbc_service.ChatServiceImpl;
+import ru.tinkoff.edu.java.scrapper.domain.jooq_jdbc_service.LinkServiceImpl;
+import ru.tinkoff.edu.java.scrapper.domain.jooq_jdbc_service.LinkUpdaterImpl;
+import ru.tinkoff.edu.java.scrapper.domain.service.*;
+import ru.tinkoff.edu.java.scrapper.web.webclient.client.StackOverflowClient;
 
 import javax.sql.DataSource;
 
 @Configuration
+@ConditionalOnProperty(prefix = "app", name = "database-access-type", havingValue = "jooq")
 @EnableTransactionManagement
 public class JooqConfiguration {
 
@@ -73,6 +83,29 @@ public class JooqConfiguration {
     @Bean
     public JdbcTemplate jdbcTemplate() {
         return new JdbcTemplate(dataSource());
+    }
+
+    @Bean
+    public ChatService chatService(
+            JooqChatRepository chatRepository,
+            JooqLinkRepository linkRepository,
+            JooqChatLinkRepository chatLinkRepository) {
+        return new ChatServiceImpl(chatRepository, linkRepository, chatLinkRepository);
+    }
+
+    @Bean
+    public LinkService linkService(
+            JooqLinkRepository linkRepository,
+            JooqChatLinkRepository chatLinkRepository,
+            StackOverflowClient stackOverflowClient) {
+        return new LinkServiceImpl(linkRepository, chatLinkRepository, stackOverflowClient);
+    }
+
+    @Bean
+    public LinkUpdater linkUpdater(
+            JooqLinkRepository linkRepository,
+            JooqChatLinkRepository chatLinkRepository) {
+        return new LinkUpdaterImpl(linkRepository, chatLinkRepository);
     }
 
 }

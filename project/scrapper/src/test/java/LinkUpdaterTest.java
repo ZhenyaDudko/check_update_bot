@@ -5,7 +5,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 import ru.tinkoff.edu.java.scrapper.ScrapperApplication;
-import ru.tinkoff.edu.java.scrapper.domain.repository.LinkRepository;
+import ru.tinkoff.edu.java.scrapper.domain.service.LinkUpdater;
+import ru.tinkoff.edu.java.scrapper.dto.domain.Chat;
 import ru.tinkoff.edu.java.scrapper.dto.domain.Link;
 import ru.tinkoff.edu.java.scrapper.dto.domain.LinkRowMapper;
 
@@ -17,89 +18,20 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @SpringBootTest(classes = ScrapperApplication.class)
-public class JdbcLinkTest extends JdbcBaseTest {
+public class LinkUpdaterTest extends JdbcBaseTest {
 
-    @Autowired
-    private LinkRepository linkRepository;
-
-    public JdbcLinkTest() throws Exception {
+    public LinkUpdaterTest() throws Exception {
         super();
     }
 
-    @SneakyThrows
-    @Transactional
-    @Rollback
-    @Test
-    void addLink_shouldAddNew() {
-        // given
-        long chatId = 1;
-        insertChat(chatId);
-        URI url = new URI("https://abacaba");
-
-        // when
-        linkRepository.addLink(chatId, url);
-
-        // then
-        Long count = countLinkByUrl(url);
-
-        assertThat(count).isEqualTo(1);
-    }
+    @Autowired
+    private LinkUpdater linkUpdaterService;
 
     @SneakyThrows
     @Transactional
     @Rollback
     @Test
-    void removeLink_shouldRemove() {
-        // given
-        long chatId = 1;
-        long linkId = 1;
-        URI url = new URI("https://abc.abc.abc");
-        insertChat(chatId);
-        insertLink(linkId, url);
-
-        // when
-        linkRepository.removeLink(chatId, linkId);
-
-        // then
-        Long count = countLinkByUrl(url);
-
-        assertThat(count).isEqualTo(0);
-    }
-
-    @SneakyThrows
-    @Transactional
-    @Rollback
-    @Test
-    void getAll_shouldReturnAll() {
-        // given
-        long chatId = 1;
-        long link1Id = 1;
-        long link2Id = 2;
-        URI url1 = new URI("https://abc");
-        URI url2 = new URI("https://def");
-
-        insertChat(chatId);
-        insertLink(link1Id, url1);
-        insertLink(link2Id, url2);
-        insertChatLink(chatId, link1Id);
-        insertChatLink(chatId, link2Id);
-
-        // when
-        List<Link> result = linkRepository.getAll(chatId);
-
-        // then
-        assertAll("Assert result",
-                () -> assertThat(result.size()).isEqualTo(2),
-                () -> assertThat(result.get(0).getUrl()).isIn(url1, url2),
-                () -> assertThat(result.get(1).getUrl()).isIn(url1, url2)
-        );
-    }
-
-    @SneakyThrows
-    @Transactional
-    @Rollback
-    @Test
-    void updateTimeTest() {
+    void updateTime_shouldUpdate() {
         // given
         OffsetDateTime time = OffsetDateTime.now();
         long linkId = 1;
@@ -107,7 +39,7 @@ public class JdbcLinkTest extends JdbcBaseTest {
         insertLink(linkId, url);
 
         // when
-        linkRepository.updateTimeByLinkId(linkId, time);
+        linkUpdaterService.updateTimeByLinkId(linkId, time);
 
         // then
         List<Link> links = jdbcTemplate.query(SELECT_LINK_BY_ID_QUERY, new LinkRowMapper(), linkId);
@@ -123,7 +55,7 @@ public class JdbcLinkTest extends JdbcBaseTest {
     @Transactional
     @Rollback
     @Test
-    void getLastUpdatedTest() {
+    void getLongAgoUpdated_shouldGet() {
         // given
         long link1Id = 1;
         long link2Id = 2;
@@ -135,7 +67,7 @@ public class JdbcLinkTest extends JdbcBaseTest {
         insertLinkWithTime(link2Id, url2, time2);
 
         // when
-        List<Link> resultList = linkRepository.getLongAgoUpdated();
+        List<Link> resultList = linkUpdaterService.getLongAgoUpdated();
 
         // then
         assertAll("Assert get last updated links results",
@@ -144,4 +76,31 @@ public class JdbcLinkTest extends JdbcBaseTest {
         );
     }
 
+    @SneakyThrows
+    @Transactional
+    @Rollback
+    @Test
+    void getChatsByLinkId_shouldGet() {
+        // given
+        long chat1Id = 1;
+        long chat2Id = 2;
+        long linkId = 1;
+        URI url1 = new URI("https://abc");
+
+        insertChat(chat1Id);
+        insertChat(chat2Id);
+        insertLink(linkId, url1);
+        insertChatLink(chat1Id, linkId);
+        insertChatLink(chat2Id, linkId);
+
+        // when
+        List<Chat> result = linkUpdaterService.getChatsByLinkId(linkId);
+
+        // then
+        assertAll("Assert result",
+                () -> assertThat(result.size()).isEqualTo(2),
+                () -> assertThat(result.get(0).getId()).isIn(chat1Id, chat2Id),
+                () -> assertThat(result.get(1).getId()).isIn(chat1Id, chat2Id)
+        );
+    }
 }
