@@ -15,7 +15,7 @@ import ru.tinkoff.edu.java.scrapper.web.webclient.client.StackOverflowClient;
 @Configuration
 @EnableTransactionManagement
 @ConditionalOnProperty(prefix = "app", name = "database-access-type", havingValue = "jpa")
-public class JpaConfiguration {
+public class JpaAccessConfiguration {
 
     @Bean
     public ChatService chatService(JpaChatRepository jpaChatRepository) {

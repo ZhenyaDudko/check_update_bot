@@ -2,10 +2,8 @@ package ru.tinkoff.edu.java.scrapper.domain.jdbc.repository;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Repository;
 import ru.tinkoff.edu.java.scrapper.domain.repository.ChatRepository;
 
-@Repository
 @RequiredArgsConstructor
 public class JdbcChatRepository implements ChatRepository {
 

@@ -32,18 +32,21 @@ public class LinkServiceImpl implements LinkService {
             throw new IllegalArgumentException("Not supported link");
         }
         List<Link> linksWithUrl = linkRepository.getLinksByUrl(url);
+        Link link;
         if (linksWithUrl.size() == 0) {
             if (parsingResult instanceof StackOverflowParsingResult stackOverflowParsingResult) {
                 StackOverflowQuestionResponse response = stackOverflowClient.fetchQuestion(stackOverflowParsingResult.id());
-                linksWithUrl.add(linkRepository.addLink(chatId, url, response.answerCount(), response.commentCount()));
+                link = linkRepository.addLink(chatId, url, response.answerCount(), response.commentCount());
             } else {
-                linksWithUrl.add(linkRepository.addLink(chatId, url));
+                link = linkRepository.addLink(chatId, url);
             }
+        } else {
+            link = linksWithUrl.get(0);
         }
         try {
-            chatLinkRepository.addChatLink(chatId, linksWithUrl.get(0).getId());
+            chatLinkRepository.addChatLink(chatId, link.getId());
         } catch (Exception ignored) {}
-        return linksWithUrl.get(0);
+        return link;
     }
 
     @Override
