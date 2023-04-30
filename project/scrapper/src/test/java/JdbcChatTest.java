@@ -21,15 +21,6 @@ public class JdbcChatTest extends JdbcBaseTest {
     @Autowired
     private ChatRepository linkRepository;
 
-    private static final String COUNT_CHAT_BY_ID_QUERY =
-            "select count(*) from chat where id = ?";
-
-    private static final String COUNT_CHAT_LINK_BY_CHAT_ID_QUERY =
-            "select count(*) from chat_link where chat_id = ?";
-
-    private static final String COUNT_LINK_BY_ID_QUERY =
-            "select count(*) from link where id = ?";
-
     public JdbcChatTest() throws Exception {
         super();
     }

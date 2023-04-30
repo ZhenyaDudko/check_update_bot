@@ -2,14 +2,12 @@ package ru.tinkoff.edu.java.scrapper.domain.jdbc.repository;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Repository;
 import ru.tinkoff.edu.java.scrapper.domain.repository.ChatLinkRepository;
 import ru.tinkoff.edu.java.scrapper.dto.domain.Chat;
 import ru.tinkoff.edu.java.scrapper.dto.domain.ChatRowMapper;
 
 import java.util.List;
 
-@Repository
 @RequiredArgsConstructor
 public class JdbcChatLinkRepository implements ChatLinkRepository {
 
