@@ -1,7 +1,7 @@
 package ru.tinkoff.edu.java.scrapper.web.scheduler;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import parser.Parser;
@@ -12,8 +12,9 @@ import ru.tinkoff.edu.java.scrapper.domain.service.LinkUpdater;
 import ru.tinkoff.edu.java.scrapper.dto.domain.Chat;
 import ru.tinkoff.edu.java.scrapper.dto.domain.Link;
 import ru.tinkoff.edu.java.scrapper.dto.webclient.GithubRepositoryResponse;
+import ru.tinkoff.edu.java.scrapper.dto.webclient.LinkUpdateRequest;
 import ru.tinkoff.edu.java.scrapper.dto.webclient.StackOverflowQuestionResponse;
-import ru.tinkoff.edu.java.scrapper.web.webclient.client.BotClient;
+import ru.tinkoff.edu.java.scrapper.web.notifier.UpdateNotifier;
 import ru.tinkoff.edu.java.scrapper.web.webclient.client.GithubClient;
 import ru.tinkoff.edu.java.scrapper.web.webclient.client.StackOverflowClient;
 
@@ -21,27 +22,15 @@ import java.time.OffsetDateTime;
 import java.util.List;
 
 @Component
+@Slf4j
+@RequiredArgsConstructor
 public class LinkUpdaterScheduler {
-
-    private static final Logger log = LoggerFactory.getLogger(LinkUpdaterScheduler.class);
 
     private final LinkUpdater linkUpdater;
     private final Parser parser = new Parser();
     private final GithubClient githubClient;
     private final StackOverflowClient stackOverflowClient;
-    private final BotClient botClient;
-
-    public LinkUpdaterScheduler(
-            LinkUpdater linkUpdater,
-            GithubClient githubClient,
-            StackOverflowClient stackOverflowClient,
-            BotClient botClient) {
-
-        this.linkUpdater = linkUpdater;
-        this.githubClient = githubClient;
-        this.stackOverflowClient = stackOverflowClient;
-        this.botClient = botClient;
-    }
+    private final UpdateNotifier updateNotifier;
 
     @Scheduled(fixedDelayString = "#{@schedulerIntervalMs}")
     public void update() {
@@ -69,7 +58,7 @@ public class LinkUpdaterScheduler {
             }
             if (time.isAfter(link.getLastUpdate())) {
                 List<Long> chatIds = linkUpdater.getChatsByLinkId(link.getId()).stream().map(Chat::getId).toList();
-                botClient.linkUpdate(link.getId(), link.getUrl(), description, chatIds);
+                updateNotifier.send(new LinkUpdateRequest(link.getId(), link.getUrl(), description, chatIds));
             }
         }
     }
