@@ -18,7 +18,7 @@ public class BotClientImpl implements BotClient {
     }
 
     @Override
-    public void linkUpdate(LinkUpdateRequest update) {
+    public void send(LinkUpdateRequest update) {
         webClient.post().uri("/updates")
                 .bodyValue(update)
                 .retrieve();

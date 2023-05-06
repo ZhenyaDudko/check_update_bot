@@ -2,7 +2,6 @@ package ru.tinkoff.edu.java.bot.configuration;
 
 import jakarta.validation.constraints.NotNull;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.validation.annotation.Validated;
 
 @Validated
@@ -10,6 +9,7 @@ import org.springframework.validation.annotation.Validated;
 public record ApplicationConfig(
         @NotNull String test,
         @NotNull String token,
-        @DefaultValue("queue") String queueName,
-        @DefaultValue("exchange") String exchangeName) {
+        @NotNull String queueName,
+        @NotNull String exchangeName,
+        @NotNull String routingKey) {
 }

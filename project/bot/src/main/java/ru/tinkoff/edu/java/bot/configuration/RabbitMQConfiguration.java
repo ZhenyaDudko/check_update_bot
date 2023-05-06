@@ -1,11 +1,11 @@
 package ru.tinkoff.edu.java.bot.configuration;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.support.converter.ClassMapper;
 import org.springframework.amqp.support.converter.DefaultClassMapper;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import ru.tinkoff.edu.java.bot.dto.web.LinkUpdateRequest;
@@ -14,42 +14,27 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
+@RequiredArgsConstructor
 public class RabbitMQConfiguration {
 
-    @Autowired
-    ApplicationConfig applicationConfig;
-
-    @Bean
-    public DirectExchange exchange() {
-        return new DirectExchange(applicationConfig.exchangeName());
-    }
-
-    @Bean
-    public Queue queue() {
-        return QueueBuilder
-                .durable(applicationConfig.queueName())
-                .withArgument("x-dead-letter-exchange", applicationConfig.exchangeName() + ".dlq")
-                .build();
-    }
-
-    @Bean
-    public Binding binding() {
-        return BindingBuilder.bind(queue()).to(exchange()).with("key");
-    }
+    private final ApplicationConfig applicationConfig;
+    private static final String DEAD_LETTER_QUEUE_NAMING_SUFFIX = ".dlq";
 
     @Bean
     public DirectExchange exchangeDLQ() {
-        return new DirectExchange(applicationConfig.exchangeName() + ".dlq");
+        return new DirectExchange(applicationConfig.exchangeName() +
+                DEAD_LETTER_QUEUE_NAMING_SUFFIX);
     }
 
     @Bean
     public Queue queueDLQ() {
-        return QueueBuilder.durable(applicationConfig.queueName() + ".dlq").build();
+        return QueueBuilder.durable(applicationConfig.queueName() +
+                DEAD_LETTER_QUEUE_NAMING_SUFFIX).build();
     }
 
     @Bean
     public Binding bindingDLQ() {
-        return BindingBuilder.bind(queueDLQ()).to(exchangeDLQ()).with("key");
+        return BindingBuilder.bind(queueDLQ()).to(exchangeDLQ()).with(applicationConfig.routingKey());
     }
 
     @Bean
