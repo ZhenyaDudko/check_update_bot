@@ -9,10 +9,19 @@ import java.time.Duration;
 
 @Validated
 @ConfigurationProperties(prefix = "app", ignoreUnknownFields = false)
-public record ApplicationConfig(@NotNull String test, Scheduler scheduler, @Name("database-access-type") AccessType accessType) {
+public record ApplicationConfig(
+        @NotNull String test,
+        Scheduler scheduler,
+        @Name("database-access-type") AccessType accessType,
+        @NotNull String queueName,
+        @NotNull String exchangeName,
+        @NotNull String routingKey,
+        @NotNull boolean useQueue
+) {
 
-    public record Scheduler(Duration interval) {}
+    public record Scheduler(Duration interval) {
+    }
 
-    public enum AccessType { JDBC, JPA, JOOQ }
+    public enum AccessType {JDBC, JPA, JOOQ}
 
 }
