@@ -33,22 +33,13 @@ jobs:
           cache: maven
       - name: Build with Maven
         run: mvn package -pl zhenya:bot -am
-      - name: Build image
-        run: docker build -t bot ./bot
       - name: Log in to the Container registry
         uses: docker/login-action@v2
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Extract metadata (tags, labels) for Docker
-        id: meta
-        uses: docker/metadata-action@v4
-        with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v4
-        with:
-          context: .
-          push: true
-          tags: bot:latest
+      - name: Build image
+        run: docker build -t ghcr.io/${{ github.actor }}/bot:latest ./bot
+      - name: Push image
+        run: docker push ghcr.io/${{ github.actor }}/bot:latest
