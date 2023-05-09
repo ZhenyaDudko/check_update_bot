@@ -3,7 +3,7 @@ name: Scrapper CI
 on:
   push:
     paths:
-      - 'project/scrapper/**'
+      - './project/scrapper/**'
   pull_request:
 
 defaults:
@@ -26,3 +26,5 @@ jobs:
         run: sudo systemctl start docker
       - name: Build with Maven
         run: mvn package -pl zhenya:scrapper -am
+      - name: Build image
+          run: docker build -t scrapper ./scrapper
