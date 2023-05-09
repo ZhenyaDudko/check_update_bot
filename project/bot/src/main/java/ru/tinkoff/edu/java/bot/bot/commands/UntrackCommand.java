@@ -1,12 +1,15 @@
 package ru.tinkoff.edu.java.bot.bot.commands;
 
 import com.pengrad.telegrambot.model.Update;
+import java.util.Arrays;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.tinkoff.edu.java.bot.exceptions.web.IncorrectRequestParametersException;
 import ru.tinkoff.edu.java.bot.exceptions.web.NotFoundException;
 import ru.tinkoff.edu.java.bot.service.LinkManager;
 
 @Component
+@Slf4j
 public class UntrackCommand extends AbstractCommand {
 
     private final static String COMMAND = "/untrack";
@@ -45,16 +48,18 @@ public class UntrackCommand extends AbstractCommand {
             return INCORRECT_COMMAND;
         }
         String link = update.message().text().substring(COMMAND.length() + 1);
+        String result;
         try {
             linkManager.deleteLink(chatId, link);
-            return SUCCESS;
+            result = SUCCESS;
         } catch (IncorrectRequestParametersException e) {
-            return INCORRECT_LINK;
+            result = INCORRECT_LINK;
         } catch (NotFoundException e) {
-            return LINK_IS_NOT_TRACKED;
+            result = LINK_IS_NOT_TRACKED;
         } catch (Throwable e) {
-            e.printStackTrace();
-            return null;
+            log.error(Arrays.toString(e.getStackTrace()));
+            result = null;
         }
+        return result;
     }
 }

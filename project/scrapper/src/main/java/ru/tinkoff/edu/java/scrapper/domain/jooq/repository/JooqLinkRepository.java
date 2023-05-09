@@ -1,5 +1,8 @@
 package ru.tinkoff.edu.java.scrapper.domain.jooq.repository;
 
+import java.net.URI;
+import java.time.OffsetDateTime;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 import org.jooq.impl.DSL;
@@ -10,12 +13,7 @@ import ru.tinkoff.edu.java.scrapper.domain.jooq.data.tables.Link;
 import ru.tinkoff.edu.java.scrapper.domain.jooq.data.tables.records.LinkRecord;
 import ru.tinkoff.edu.java.scrapper.domain.repository.LinkRepository;
 import ru.tinkoff.edu.java.scrapper.dto.domain.LinkRecordMapper;
-
-import java.net.URI;
-import java.time.OffsetDateTime;
-import java.util.List;
-
-import static org.jooq.impl.DSL.*;
+import static org.jooq.impl.DSL.select;
 
 @RequiredArgsConstructor
 public class JooqLinkRepository implements LinkRepository {

@@ -1,13 +1,11 @@
 package ru.tinkoff.edu.java.scrapper.domain.jooq.repository;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 import ru.tinkoff.edu.java.scrapper.domain.jooq.data.tables.ChatLink;
 import ru.tinkoff.edu.java.scrapper.domain.repository.ChatLinkRepository;
 import ru.tinkoff.edu.java.scrapper.dto.domain.Chat;
-
-import java.util.List;
-
 import static org.jooq.impl.DSL.val;
 
 @RequiredArgsConstructor

@@ -1,15 +1,17 @@
 package ru.tinkoff.edu.java.bot.bot.commands;
 
 import com.pengrad.telegrambot.model.Update;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.tinkoff.edu.java.bot.dto.web.LinkResponse;
 import ru.tinkoff.edu.java.bot.exceptions.web.IncorrectRequestParametersException;
 import ru.tinkoff.edu.java.bot.service.LinkManager;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 @Component
+@Slf4j
 public class ListCommand extends AbstractCommand {
 
     private final static String COMMAND = "/list";
@@ -51,7 +53,7 @@ public class ListCommand extends AbstractCommand {
         } catch (IncorrectRequestParametersException ignored) {
             return NOT_REGISTERED;
         } catch (Throwable e) {
-            e.printStackTrace();
+            log.error(Arrays.toString(e.getStackTrace()));
             return null;
         }
     }

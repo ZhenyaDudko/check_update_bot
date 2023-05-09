@@ -1,7 +1,13 @@
 package ru.tinkoff.edu.java.bot.configuration;
 
+import java.util.HashMap;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
-import org.springframework.amqp.core.*;
+import org.springframework.amqp.core.Binding;
+import org.springframework.amqp.core.BindingBuilder;
+import org.springframework.amqp.core.DirectExchange;
+import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.core.QueueBuilder;
 import org.springframework.amqp.support.converter.ClassMapper;
 import org.springframework.amqp.support.converter.DefaultClassMapper;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
@@ -9,9 +15,6 @@ import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import ru.tinkoff.edu.java.bot.dto.web.LinkUpdateRequest;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @Configuration
 @RequiredArgsConstructor
@@ -22,14 +25,14 @@ public class RabbitMQConfiguration {
 
     @Bean
     public DirectExchange exchangeDLQ() {
-        return new DirectExchange(applicationConfig.exchangeName() +
-                DEAD_LETTER_QUEUE_NAMING_SUFFIX);
+        return new DirectExchange(applicationConfig.exchangeName()
+            + DEAD_LETTER_QUEUE_NAMING_SUFFIX);
     }
 
     @Bean
     public Queue queueDLQ() {
-        return QueueBuilder.durable(applicationConfig.queueName() +
-                DEAD_LETTER_QUEUE_NAMING_SUFFIX).build();
+        return QueueBuilder.durable(applicationConfig.queueName()
+            + DEAD_LETTER_QUEUE_NAMING_SUFFIX).build();
     }
 
     @Bean

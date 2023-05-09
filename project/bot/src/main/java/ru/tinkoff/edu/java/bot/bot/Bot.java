@@ -8,11 +8,10 @@ import com.pengrad.telegrambot.request.BaseRequest;
 import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.request.SetMyCommands;
 import com.pengrad.telegrambot.response.BaseResponse;
+import java.util.List;
 import org.springframework.stereotype.Component;
 import ru.tinkoff.edu.java.bot.bot.commands.Command;
 import ru.tinkoff.edu.java.bot.configuration.ApplicationConfig;
-
-import java.util.List;
 
 @Component
 public class Bot {

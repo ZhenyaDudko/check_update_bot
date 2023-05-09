@@ -9,7 +9,9 @@ import ru.tinkoff.edu.java.scrapper.domain.jpa.repository.JpaLinkRepository;
 import ru.tinkoff.edu.java.scrapper.domain.jpa.service.JpaChatService;
 import ru.tinkoff.edu.java.scrapper.domain.jpa.service.JpaLinkService;
 import ru.tinkoff.edu.java.scrapper.domain.jpa.service.JpaLinkUpdaterService;
-import ru.tinkoff.edu.java.scrapper.domain.service.*;
+import ru.tinkoff.edu.java.scrapper.domain.service.ChatService;
+import ru.tinkoff.edu.java.scrapper.domain.service.LinkService;
+import ru.tinkoff.edu.java.scrapper.domain.service.LinkUpdater;
 import ru.tinkoff.edu.java.scrapper.web.webclient.client.StackOverflowClient;
 
 @Configuration

@@ -5,7 +5,4 @@ public class IncorrectRequestParametersException extends Exception {
         super(message);
     }
 
-    public IncorrectRequestParametersException() {
-        super();
-    }
 }

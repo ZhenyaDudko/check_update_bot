@@ -43,3 +43,9 @@ jobs:
         run: docker build -t ${{ env.REGISTRY }}/zhenyadudko/${{ env.IMAGE_NAME }}:latest ./bot
       - name: Push image
         run: docker push ${{ env.REGISTRY }}/zhenyadudko/${{ env.IMAGE_NAME }}:latest
+  checkstyle:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Checkstyle
+        run: mvn -pl zhenya:bot -am checkstyle:check

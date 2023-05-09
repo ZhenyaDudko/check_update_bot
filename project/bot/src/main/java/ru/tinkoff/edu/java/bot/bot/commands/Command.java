@@ -9,7 +9,7 @@ public interface Command {
 
     String description();
 
-    String handle(final Update update);
+    String handle(Update update);
 
     default boolean supports(final Update update) {
         return update.message().text().startsWith(command());

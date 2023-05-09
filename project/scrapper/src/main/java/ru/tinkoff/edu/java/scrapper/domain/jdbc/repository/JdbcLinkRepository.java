@@ -1,14 +1,13 @@
 package ru.tinkoff.edu.java.scrapper.domain.jdbc.repository;
 
+import java.net.URI;
+import java.time.OffsetDateTime;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import ru.tinkoff.edu.java.scrapper.domain.repository.LinkRepository;
 import ru.tinkoff.edu.java.scrapper.dto.domain.Link;
 import ru.tinkoff.edu.java.scrapper.dto.domain.LinkRowMapper;
-
-import java.net.URI;
-import java.time.OffsetDateTime;
-import java.util.List;
 
 @RequiredArgsConstructor
 public class JdbcLinkRepository implements LinkRepository {
