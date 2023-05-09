@@ -45,3 +45,9 @@ jobs:
         run: docker build -t ${{ env.REGISTRY }}/zhenyadudko/${{ env.IMAGE_NAME }}:latest ./scrapper
       - name: Push image
         run: docker push ${{ env.REGISTRY }}/zhenyadudko/${{ env.IMAGE_NAME }}:latest
+  checkstyle:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Checkstyle
+        run: mvn -pl zhenya:scrapper -am checkstyle:check
