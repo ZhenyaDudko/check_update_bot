@@ -11,6 +11,7 @@ import ru.tinkoff.edu.java.scrapper.dto.domain.LinkRowMapper;
 
 import java.net.URI;
 import java.time.OffsetDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -101,7 +102,7 @@ public class JdbcLinkTest extends JdbcBaseTest {
     @Test
     void updateTimeTest() {
         // given
-        OffsetDateTime time = OffsetDateTime.now();
+        OffsetDateTime time = OffsetDateTime.now().truncatedTo(ChronoUnit.SECONDS);
         long linkId = 1;
         URI url = new URI("https://abacaba");
         insertLink(linkId, url);
@@ -115,7 +116,8 @@ public class JdbcLinkTest extends JdbcBaseTest {
         assertAll("Assert update time of link results",
                 () -> assertThat(links.size()).isEqualTo(1),
                 () -> assertThat(links.get(0).getId()).isEqualTo(linkId),
-                () -> assertThat(links.get(0).getLastUpdate()).isEqualTo(time)
+                () -> assertThat(links.get(0).getLastUpdate().truncatedTo(ChronoUnit.SECONDS))
+                        .isEqualTo(time)
         );
     }
 
