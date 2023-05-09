@@ -24,6 +24,5 @@ jobs:
           cache: maven
       - name: Run Docker
         run: sudo systemctl start docker
-      - run: cd project
       - name: Build with Maven
         run: mvn package -pl zhenya:scrapper -am
