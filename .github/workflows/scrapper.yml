@@ -27,4 +27,4 @@ jobs:
       - name: Build with Maven
         run: mvn package -pl zhenya:scrapper -am
       - name: Build image
-          run: docker build -t scrapper ./scrapper
+        run: docker build -t scrapper ./scrapper
