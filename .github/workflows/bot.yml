@@ -2,8 +2,8 @@ name: Bot CI
 
 on:
   push:
-#    paths:
-#      - 'bot/**'
+    paths:
+      - 'bot/**'
   pull_request:
 
 defaults:
