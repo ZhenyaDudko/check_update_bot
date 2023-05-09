@@ -6,6 +6,11 @@ on:
   #      - 'scrapper/**'
   pull_request:
 
+defaults:
+  run:
+    shell: bash
+    working-directory: ./project
+
 jobs:
   build:
     runs-on: ubuntu-latest
