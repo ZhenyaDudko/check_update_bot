@@ -1,9 +1,11 @@
 name: Scrapper CI
 
 on:
+  workflow_dispatch:
   push:
     paths:
-      - './project/scrapper/**'
+      - '.github/workflows/scrapper.yml'
+      - 'project/scrapper/**'
   pull_request:
 
 defaults:

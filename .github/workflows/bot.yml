@@ -1,9 +1,11 @@
 name: Bot CI
 
 on:
+  workflow_dispatch:
   push:
     paths:
-      - './project/bot/**'
+      - '.github/workflows/bot.yml'
+      - 'project/bot/**'
   pull_request:
 
 defaults:
