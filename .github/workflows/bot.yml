@@ -3,7 +3,7 @@ name: Bot CI
 on:
   push:
     paths:
-      - 'bot/**'
+      - 'project/bot/**'
   pull_request:
 
 defaults:

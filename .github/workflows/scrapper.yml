@@ -3,7 +3,7 @@ name: Scrapper CI
 on:
   push:
     paths:
-      - 'scrapper/**'
+      - 'project/scrapper/**'
   pull_request:
 
 defaults:
