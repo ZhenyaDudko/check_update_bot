@@ -16,6 +16,7 @@ defaults:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: bot
+  NAMESPACE: echo ${{ github.actor }} | tr '[:upper:]' '[:lower:]'
 
 jobs:
   build:
@@ -40,6 +41,6 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Build image
-        run: docker build -t ${{ env.REGISTRY }}/${{ github.actor }}/${{ env.IMAGE_NAME }}:latest ./bot
+        run: docker build -t ${{ env.REGISTRY }}/${{ env.NAMESPACE }}/${{ env.IMAGE_NAME }}:latest ./bot
       - name: Push image
-        run: docker push ${{ env.REGISTRY }}/${{ github.actor }}/${{ env.IMAGE_NAME }}:latest
+        run: docker push ${{ env.REGISTRY }}/${{ env.NAMESPACE }}/${{ env.IMAGE_NAME }}:latest
