@@ -10,6 +10,7 @@
         <spring-boot.version>3.0.1</spring-boot.version>
         <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
         <testcontainers.version>1.18.0</testcontainers.version>
+        <checkstyle.config.location>checkstyle.xml</checkstyle.config.location>
     </properties>
 
     <dependencies>

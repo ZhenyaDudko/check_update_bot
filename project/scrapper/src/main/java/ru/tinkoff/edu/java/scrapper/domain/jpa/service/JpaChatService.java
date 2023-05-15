@@ -18,7 +18,8 @@ public class JpaChatService implements ChatService {
         Chat chat = new Chat().setId(chatId);
         try {
             jpaChatRepository.saveAndFlush(chat);
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {
+        }
     }
 
     @Override

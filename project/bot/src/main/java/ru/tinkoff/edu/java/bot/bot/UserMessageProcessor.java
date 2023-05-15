@@ -1,10 +1,9 @@
 package ru.tinkoff.edu.java.bot.bot;
 
 import com.pengrad.telegrambot.model.Update;
-import org.springframework.stereotype.Component;
-import ru.tinkoff.edu.java.bot.bot.commands.*;
-
 import java.util.List;
+import org.springframework.stereotype.Component;
+import ru.tinkoff.edu.java.bot.bot.commands.Command;
 
 @Component
 public class UserMessageProcessor {

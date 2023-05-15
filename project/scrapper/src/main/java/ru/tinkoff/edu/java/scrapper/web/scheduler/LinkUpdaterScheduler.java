@@ -1,5 +1,7 @@
 package ru.tinkoff.edu.java.scrapper.web.scheduler;
 
+import java.time.OffsetDateTime;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -17,9 +19,6 @@ import ru.tinkoff.edu.java.scrapper.dto.webclient.StackOverflowQuestionResponse;
 import ru.tinkoff.edu.java.scrapper.web.notifier.UpdateNotifier;
 import ru.tinkoff.edu.java.scrapper.web.webclient.client.GithubClient;
 import ru.tinkoff.edu.java.scrapper.web.webclient.client.StackOverflowClient;
-
-import java.time.OffsetDateTime;
-import java.util.List;
 
 @Component
 @Slf4j

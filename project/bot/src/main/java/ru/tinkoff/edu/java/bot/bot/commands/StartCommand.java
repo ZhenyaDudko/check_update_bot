@@ -1,10 +1,13 @@
 package ru.tinkoff.edu.java.bot.bot.commands;
 
 import com.pengrad.telegrambot.model.Update;
+import java.util.Arrays;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.tinkoff.edu.java.bot.service.LinkManager;
 
 @Component
+@Slf4j
 public class StartCommand extends AbstractCommand {
 
     private final static String COMMAND = "/start";
@@ -36,7 +39,7 @@ public class StartCommand extends AbstractCommand {
             linkManager.registerChat(chatId);
             return REGISTERED;
         } catch (Throwable e) {
-            e.printStackTrace();
+            log.error(Arrays.toString(e.getStackTrace()));
             return null;
         }
     }

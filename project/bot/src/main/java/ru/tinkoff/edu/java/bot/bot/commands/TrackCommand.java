@@ -1,11 +1,14 @@
 package ru.tinkoff.edu.java.bot.bot.commands;
 
 import com.pengrad.telegrambot.model.Update;
+import java.util.Arrays;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.tinkoff.edu.java.bot.exceptions.web.IncorrectRequestParametersException;
 import ru.tinkoff.edu.java.bot.service.LinkManager;
 
 @Component
+@Slf4j
 public class TrackCommand extends AbstractCommand {
 
     private final static String COMMAND = "/track";
@@ -48,7 +51,7 @@ public class TrackCommand extends AbstractCommand {
         } catch (IncorrectRequestParametersException e) {
             return INCORRECT_LINK;
         } catch (Throwable e) {
-            e.printStackTrace();
+            log.error(Arrays.toString(e.getStackTrace()));
             return null;
         }
     }

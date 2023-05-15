@@ -1,8 +1,7 @@
 package ru.tinkoff.edu.java.scrapper.domain.repository;
 
-import ru.tinkoff.edu.java.scrapper.dto.domain.Chat;
-
 import java.util.List;
+import ru.tinkoff.edu.java.scrapper.dto.domain.Chat;
 
 public interface ChatLinkRepository {
 

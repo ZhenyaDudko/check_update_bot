@@ -5,7 +5,7 @@ import ru.tinkoff.edu.java.scrapper.dto.webclient.LinkUpdateRequest;
 
 public class BotClientImpl implements BotClient {
 
-    public static final String baseUrl = "http://localhost:8080";
+    public static final String BASE_URL = "http://localhost:8080";
 
     private final WebClient webClient;
 
@@ -14,7 +14,7 @@ public class BotClientImpl implements BotClient {
     }
 
     public BotClientImpl() {
-        this.webClient = WebClient.create(baseUrl);
+        this.webClient = WebClient.create(BASE_URL);
     }
 
     @Override

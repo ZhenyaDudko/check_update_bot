@@ -1,7 +1,7 @@
 package ru.tinkoff.edu.java.scrapper.domain.jooq_jdbc_service;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.tinkoff.edu.java.scrapper.domain.exception.ChatNotFoundException;
 import ru.tinkoff.edu.java.scrapper.domain.exception.LinkNotFoundException;
@@ -10,8 +10,6 @@ import ru.tinkoff.edu.java.scrapper.domain.repository.ChatRepository;
 import ru.tinkoff.edu.java.scrapper.domain.repository.LinkRepository;
 import ru.tinkoff.edu.java.scrapper.domain.service.ChatService;
 import ru.tinkoff.edu.java.scrapper.dto.domain.Link;
-
-import java.util.List;
 
 @RequiredArgsConstructor
 public class ChatServiceImpl implements ChatService {
@@ -24,7 +22,8 @@ public class ChatServiceImpl implements ChatService {
     public void register(long chatId) {
         try {
             chatRepository.add(chatId);
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {
+        }
     }
 
     @Override
@@ -41,7 +40,8 @@ public class ChatServiceImpl implements ChatService {
                 if (countRefs == 0) {
                     linkRepository.removeLink(chatId, link.getId());
                 }
-            } catch (LinkNotFoundException ignored) {}
+            } catch (LinkNotFoundException ignored) {
+            }
         }
         chatRepository.remove(chatId);
     }

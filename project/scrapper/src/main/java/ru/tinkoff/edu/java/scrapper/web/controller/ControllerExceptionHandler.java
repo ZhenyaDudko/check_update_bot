@@ -1,5 +1,7 @@
 package ru.tinkoff.edu.java.scrapper.web.controller;
 
+import java.net.URISyntaxException;
+import java.util.Arrays;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -9,9 +11,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.tinkoff.edu.java.scrapper.domain.exception.ChatNotFoundException;
 import ru.tinkoff.edu.java.scrapper.domain.exception.LinkNotFoundException;
 import ru.tinkoff.edu.java.scrapper.dto.controller.ApiErrorResponse;
-
-import java.net.URISyntaxException;
-import java.util.Arrays;
 
 @RestControllerAdvice
 public class ControllerExceptionHandler {

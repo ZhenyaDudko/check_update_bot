@@ -4,6 +4,6 @@ import results.ParsingResult;
 
 public interface ParsingHandler {
 
-    ParsingResult handle(final String link);
+    ParsingResult handle(String link);
 
 }

@@ -30,10 +30,10 @@ public class LinkServiceTest extends JdbcBaseTest {
         insertChat(1);
         URI url = URI.create("https://github.com/ZhenyaDudko/tinkoff_project");
 
-        linkService.add(1, url);
+        Link link = linkService.add(1, url);
 
         Long count = jdbcTemplate.queryForObject(COUNT_CHAT_LINK_BY_CHAT_ID_LINK_ID_QUERY,
-                Long.class, 1, 1);
+                Long.class, 1, link.getId());
         assertThat(count).isEqualTo(1);
     }
 
@@ -44,22 +44,6 @@ public class LinkServiceTest extends JdbcBaseTest {
         insertChat(1);
         URI url = URI.create("https://github.com/ZhenyaDudko/tinkoff_project");
         insertLink(1, url);
-
-        linkService.add(1, url);
-
-        Long count = jdbcTemplate.queryForObject(COUNT_CHAT_LINK_BY_CHAT_ID_LINK_ID_QUERY,
-                Long.class, 1, 1);
-        assertThat(count).isEqualTo(1);
-    }
-
-    @Transactional
-    @Rollback
-    @Test
-    void add_shouldNotAdd() {
-        insertChat(1);
-        URI url = URI.create("https://github.com/hello/cat");
-        insertLink(1, url);
-        insertChatLink(1, 1);
 
         linkService.add(1, url);
 

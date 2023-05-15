@@ -12,5 +12,5 @@ public abstract class AbstractCommand implements Command {
         return null;
     }
 
-    protected abstract String handleImpl(final Update update);
+    protected abstract String handleImpl(Update update);
 }

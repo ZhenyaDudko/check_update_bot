@@ -1,5 +1,7 @@
 package ru.tinkoff.edu.java.scrapper.domain.jooq_jdbc_service;
 
+import java.net.URI;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 import parser.Parser;
@@ -12,9 +14,6 @@ import ru.tinkoff.edu.java.scrapper.domain.service.LinkService;
 import ru.tinkoff.edu.java.scrapper.dto.domain.Link;
 import ru.tinkoff.edu.java.scrapper.dto.webclient.StackOverflowQuestionResponse;
 import ru.tinkoff.edu.java.scrapper.web.webclient.client.StackOverflowClient;
-
-import java.net.URI;
-import java.util.List;
 
 @RequiredArgsConstructor
 public class LinkServiceImpl implements LinkService {
@@ -35,7 +34,8 @@ public class LinkServiceImpl implements LinkService {
         Link link;
         if (linksWithUrl.size() == 0) {
             if (parsingResult instanceof StackOverflowParsingResult stackOverflowParsingResult) {
-                StackOverflowQuestionResponse response = stackOverflowClient.fetchQuestion(stackOverflowParsingResult.id());
+                StackOverflowQuestionResponse response = stackOverflowClient
+                    .fetchQuestion(stackOverflowParsingResult.id());
                 link = linkRepository.addLink(chatId, url, response.answerCount(), response.commentCount());
             } else {
                 link = linkRepository.addLink(chatId, url);
@@ -45,7 +45,8 @@ public class LinkServiceImpl implements LinkService {
         }
         try {
             chatLinkRepository.addChatLink(chatId, link.getId());
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {
+        }
         return link;
     }
 

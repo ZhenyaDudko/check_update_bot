@@ -1,10 +1,9 @@
 package ru.tinkoff.edu.java.scrapper.domain.repository;
 
-import ru.tinkoff.edu.java.scrapper.dto.domain.Link;
-
 import java.net.URI;
 import java.time.OffsetDateTime;
 import java.util.List;
+import ru.tinkoff.edu.java.scrapper.dto.domain.Link;
 
 public interface LinkRepository {
 

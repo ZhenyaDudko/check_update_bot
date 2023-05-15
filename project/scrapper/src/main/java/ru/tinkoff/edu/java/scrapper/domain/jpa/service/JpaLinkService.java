@@ -1,5 +1,8 @@
 package ru.tinkoff.edu.java.scrapper.domain.jpa.service;
 
+import java.net.URI;
+import java.time.ZoneOffset;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 import parser.Parser;
@@ -13,10 +16,6 @@ import ru.tinkoff.edu.java.scrapper.domain.service.LinkService;
 import ru.tinkoff.edu.java.scrapper.dto.domain.Link;
 import ru.tinkoff.edu.java.scrapper.dto.webclient.StackOverflowQuestionResponse;
 import ru.tinkoff.edu.java.scrapper.web.webclient.client.StackOverflowClient;
-
-import java.net.URI;
-import java.time.ZoneOffset;
-import java.util.List;
 
 @RequiredArgsConstructor
 public class JpaLinkService implements LinkService {
@@ -34,12 +33,13 @@ public class JpaLinkService implements LinkService {
             throw new IllegalArgumentException("Not supported link");
         }
         Chat chat = jpaChatRepository.findById(chatId)
-                .orElseThrow(() -> new IllegalArgumentException("Chat with id: " + chatId + " not found"));
+                .orElseThrow(() -> chatNotFoundExceptionCreation(chatId));
         var link = jpaLinkRepository.findByUrl(url.toString());
         if (link == null) {
             link = new ru.tinkoff.edu.java.scrapper.domain.jpa.entity.Link().setUrl(url.toString());
             if (parsingResult instanceof StackOverflowParsingResult stackOverflowParsingResult) {
-                StackOverflowQuestionResponse response = stackOverflowClient.fetchQuestion(stackOverflowParsingResult.id());
+                StackOverflowQuestionResponse response = stackOverflowClient
+                    .fetchQuestion(stackOverflowParsingResult.id());
                 link.setAnswerCount(response.answerCount()).setCommentCount(response.commentCount());
             }
         }
@@ -51,7 +51,7 @@ public class JpaLinkService implements LinkService {
     @Transactional
     public Link remove(long chatId, URI url) throws LinkNotFoundException {
         Chat chat = jpaChatRepository.findById(chatId)
-                .orElseThrow(() -> new IllegalArgumentException("Chat with id: " + chatId + " not found"));
+                .orElseThrow(() -> chatNotFoundExceptionCreation(chatId));
         var link = jpaLinkRepository.findByUrl(url.toString());
         if (link == null || link.getChats().stream().noneMatch(c -> c.getId() == chatId)) {
             throw new LinkNotFoundException("Link not found: " + url);
@@ -69,8 +69,12 @@ public class JpaLinkService implements LinkService {
     @Override
     public List<Link> listAll(long chatId) {
         Chat chat = jpaChatRepository.findById(chatId)
-                .orElseThrow(() -> new IllegalArgumentException("Chat with id: " + chatId + " not found"));
+                .orElseThrow(() -> chatNotFoundExceptionCreation(chatId));
         return chat.getLinks().stream().map(JpaLinkService::map).toList();
+    }
+
+    private IllegalArgumentException chatNotFoundExceptionCreation(long chatId) {
+        return new IllegalArgumentException("Chat with id: " + chatId + " not found");
     }
 
     protected static Link map(ru.tinkoff.edu.java.scrapper.domain.jpa.entity.Link link) {

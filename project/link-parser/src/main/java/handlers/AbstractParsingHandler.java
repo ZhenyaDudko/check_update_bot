@@ -37,5 +37,5 @@ public abstract class AbstractParsingHandler implements ParsingHandler {
 
     protected abstract String getLinkPattern();
 
-    protected abstract ParsingResult parse(final String link);
+    protected abstract ParsingResult parse(String link);
 }

@@ -1,13 +1,12 @@
 package ru.tinkoff.edu.java.scrapper.web.webclient.client;
 
+import java.util.List;
 import org.springframework.web.reactive.function.client.WebClient;
 import ru.tinkoff.edu.java.scrapper.dto.webclient.StackOverflowQuestionResponse;
 
-import java.util.List;
-
 public class StackOverflowClientImpl implements StackOverflowClient {
 
-    public static final String baseUrl = "https://api.stackexchange.com/questions";
+    public static final String BASE_URL = "https://api.stackexchange.com/questions";
 
     private final WebClient webClient;
 
@@ -16,15 +15,19 @@ public class StackOverflowClientImpl implements StackOverflowClient {
     }
 
     public StackOverflowClientImpl() {
-        this.webClient = WebClient.create(baseUrl);
+        this.webClient = WebClient.create(BASE_URL);
     }
 
     @Override
     public StackOverflowQuestionResponse fetchQuestion(String id) {
+        String idPathFragment = "{id}";
+        String siteParam = "site";
+        String site = "stackoverflow";
+
         WrapperQuestion wrapperQuestion = webClient.get()
                 .uri(builder -> builder
-                        .pathSegment("{id}")
-                        .queryParam("site", "stackoverflow")
+                        .pathSegment(idPathFragment)
+                        .queryParam(siteParam, site)
                         .build(id))
                 .retrieve()
                 .bodyToMono(WrapperQuestion.class)
@@ -34,9 +37,9 @@ public class StackOverflowClientImpl implements StackOverflowClient {
         }
         WrapperComments wrapperComments = webClient.get()
                 .uri(builder -> builder
-                        .pathSegment("{id}")
+                        .pathSegment(idPathFragment)
                         .pathSegment("comments")
-                        .queryParam("site", "stackoverflow")
+                        .queryParam(siteParam, site)
                         .build(id))
                 .retrieve()
                 .bodyToMono(WrapperComments.class)

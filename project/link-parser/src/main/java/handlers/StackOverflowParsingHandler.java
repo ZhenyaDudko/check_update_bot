@@ -10,10 +10,11 @@ public class StackOverflowParsingHandler extends AbstractParsingHandler {
     }
 
     public StackOverflowParsingHandler() {
-        super();
     }
 
     private static final String LINK_PATTERN = "^https://stackoverflow.com/questions/\\d+/[^/]+/?$";
+
+    private static final int QUESTION_ID_LINK_INDEX = 4;
 
     @Override
     protected String getLinkPattern() {
@@ -26,6 +27,6 @@ public class StackOverflowParsingHandler extends AbstractParsingHandler {
             return null;
         }
         String[] splitResult = link.split("/");
-        return new StackOverflowParsingResult(splitResult[4]);
+        return new StackOverflowParsingResult(splitResult[QUESTION_ID_LINK_INDEX]);
     }
 }

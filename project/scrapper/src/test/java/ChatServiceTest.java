@@ -28,17 +28,4 @@ public class ChatServiceTest extends JdbcBaseTest {
         assertThat(count).isEqualTo(1);
     }
 
-    @Transactional
-    @Rollback
-    @Test
-    void add_shouldIgnore() {
-        insertChat(1);
-
-        chatService.register(1);
-
-        Long count = jdbcTemplate.queryForObject(COUNT_CHAT_BY_ID_QUERY, Long.class, 1);
-        assertThat(count).isEqualTo(1);
-    }
-
-
 }

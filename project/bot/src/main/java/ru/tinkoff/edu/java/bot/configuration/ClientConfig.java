@@ -9,7 +9,7 @@ import ru.tinkoff.edu.java.bot.web.webclient.ScrapperClientImpl;
 @Configuration
 public class ClientConfig {
 
-    @Value("${scrapper.baseurl:" + ScrapperClientImpl.baseUrl + "}")
+    @Value("${scrapper.baseurl:" + ScrapperClientImpl.BASE_URL + "}")
     private String scrapperBaseUrl;
 
     @Bean

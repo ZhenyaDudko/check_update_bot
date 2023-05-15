@@ -1,13 +1,21 @@
 package ru.tinkoff.edu.java.scrapper.domain.jpa.entity;
 
-import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.Accessors;
-
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 
 @Entity
 @Getter
@@ -33,11 +41,11 @@ public class Link {
     private Integer answerCount = null;
 
     @ManyToMany(fetch = FetchType.LAZY,
-            cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.PERSIST})
+                cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.PERSIST})
     @JoinTable(name = "chat_link",
-            inverseJoinColumns = @JoinColumn(name = "chat_id",
-                    nullable = false),
-            joinColumns = @JoinColumn(name = "link_id",
+               inverseJoinColumns = @JoinColumn(name = "chat_id",
+                                                nullable = false),
+               joinColumns = @JoinColumn(name = "link_id",
                     nullable = false))
     private Set<Chat> chats = new HashSet<>();
 
