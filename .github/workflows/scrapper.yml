@@ -6,6 +6,7 @@ on:
     paths:
       - '.github/workflows/scrapper.yml'
       - 'project/scrapper/**'
+      - 'project/link-parser/**'
   pull_request:
 
 defaults:
