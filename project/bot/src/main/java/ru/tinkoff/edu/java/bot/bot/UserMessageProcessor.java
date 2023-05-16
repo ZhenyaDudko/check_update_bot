@@ -4,6 +4,7 @@ import com.pengrad.telegrambot.model.Update;
 import java.util.List;
 import org.springframework.stereotype.Component;
 import ru.tinkoff.edu.java.bot.bot.commands.Command;
+import ru.tinkoff.edu.java.bot.metric.MessageMetric;
 
 @Component
 public class UserMessageProcessor {
@@ -20,6 +21,7 @@ public class UserMessageProcessor {
         if (update.message() == null || update.message().text() == null) {
             return null;
         }
+        MessageMetric.incrementMessageCount();
         String result = null;
         for (Command command: commands) {
             if (command.supports(update)) {
